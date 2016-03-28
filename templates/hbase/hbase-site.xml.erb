@@ -1,0 +1,30 @@
+<%
+# Convert a namenode hostname to a NameNode ID.
+# We can't use '.' characters because NameNode IDs.
+# will be used in the names of some Java properties,
+# which are '.' delimited.
+def namenode_host_to_id(host)
+  host.tr('.', '-')
+end
+
+-%>
+<?xml version="1.0"?>
+<!-- NOTE:  This file is managed by Puppet. -->
+
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+
+  <property>
+    <name>hbase.cluster.distributed</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>hbase.rootdir</name>
+    <value>hdfs://<%= hostname %>:8020/hbase</value>
+  </property>
+
+</configuration>
