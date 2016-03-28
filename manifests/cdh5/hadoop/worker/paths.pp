@@ -1,4 +1,4 @@
-# == Define puppet-cdh::cdh5::hadoop::worker::paths
+# == Define puppet_cdh::cdh5::hadoop::worker::paths
 #
 # Ensures directories needed for Hadoop Worker nodes
 # are created with proper ownership and permissions.
@@ -15,7 +15,7 @@
 # $basedir   - base path for directory creation.  Default: $title
 #
 # == Usage:
-# puppet-cdh::cdh5::hadoop::worker::paths { ['/mnt/hadoop/data/a', '/mnt/hadoop/data/b']: }
+# puppet_cdh::cdh5::hadoop::worker::paths { ['/mnt/hadoop/data/a', '/mnt/hadoop/data/b']: }
 #
 # The above declaration will ensure that the following directory hierarchy exists:
 #       /mnt/hadoop/data/a
@@ -33,12 +33,12 @@
 #
 # (If you use MRv1 instead of yarn, the hierarchy will be slightly different.)
 #
-define puppet-cdh::cdh5::hadoop::worker::paths ($basedir = $title) {
-  Class['puppet-cdh::cdh5::hadoop'] -> puppet-cdh::Cdh5::Hadoop::Worker::Paths[$title]
+define puppet_cdh::cdh5::hadoop::worker::paths ($basedir = $title) {
+  Class['puppet_cdh::cdh5::hadoop'] -> Puppet_cdh::Cdh5::Hadoop::Worker::Paths[$title]
 
   # hdfs, hadoop, and yarn users
   # are all added by packages
-  # installed by puppet-cdh::cdh5::hadoop
+  # installed by puppet_cdh::cdh5::hadoop
 
   # make sure mounts exist
   file { $basedir:
@@ -58,10 +58,10 @@ define puppet-cdh::cdh5::hadoop::worker::paths ($basedir = $title) {
 
   # Assume that $dfs_data_path is two levels.  e.g. hdfs/dn
   # We need to manage the parent directory too.
-  $dfs_data_path_parent = inline_template("<%= File.dirname('${::puppet-cdh::cdh5::hadoop::dfs_data_path}') %>")
+  $dfs_data_path_parent = inline_template("<%= File.dirname('${::puppet_cdh::cdh5::hadoop::dfs_data_path}') %>")
 
   # create DataNode directories
-  file { ["${basedir}/${dfs_data_path_parent}", "${basedir}/${::puppet-cdh::cdh5::hadoop::dfs_data_path}"]:
+  file { ["${basedir}/${dfs_data_path_parent}", "${basedir}/${::puppet_cdh::cdh5::hadoop::dfs_data_path}"]:
     ensure  => 'directory',
     owner   => 'hdfs',
     group   => 'hdfs',

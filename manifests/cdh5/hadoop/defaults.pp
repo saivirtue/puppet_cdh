@@ -1,7 +1,7 @@
 # == Class cdh::hadoop::defaults
 # Default parameters for cdh::hadoop configuration.
 #
-class puppet-cdh::cdh5::hadoop::defaults {
+class puppet_cdh::cdh5::hadoop::defaults {
     $cluster_name                                = 'cdh'
     $journalnode_hosts                           = undef
     $dfs_journalnode_edits_dir                   = undef
@@ -54,7 +54,7 @@ class puppet-cdh::cdh5::hadoop::defaults {
     $yarn_scheduler_minimum_allocation_vcores    = undef
     $yarn_scheduler_maximum_allocation_vcores    = undef
 
-    $fair_scheduler_template                     = 'puppet-cdh/hadoop/fair-scheduler.xml.erb'
+    $fair_scheduler_template                     = 'puppet_cdh/hadoop/fair-scheduler.xml.erb'
     $yarn_site_extra_properties                  = undef
 
     $hadoop_heapsize                             = undef

@@ -1,4 +1,4 @@
-class puppet-cdh::cdh5::zookeeper {
+class puppet_cdh::cdh5::zookeeper {
   package { 'zookeeper':
     ensure => 'present',
     tag    => 'cdh',

@@ -1,4 +1,4 @@
-# == Define puppet-cdh::cdh5::hadoop::directory
+# == Define puppet_cdh::cdh5::hadoop::directory
 #
 # Creates or removes a directory in HDFS.
 #
@@ -27,17 +27,17 @@
 # $group  - HDFS directory group owner. Default: hdfs
 # $mode   - HDFS diretory mode.  Default 0755
 #
-define puppet-cdh::cdh5::hadoop::directory (
+define puppet_cdh::cdh5::hadoop::directory (
     $path   = $title,
     $ensure = 'present',
     $owner  = 'hdfs',
     $group  = 'hdfs',
     $mode   = '0755')
 {
-    Class['puppet-cdh::cdh5::hadoop'] -> puppet-cdh::Cdh5::Hadoop::Directory[$title]
+    Class['puppet_cdh::cdh5::hadoop'] -> Puppet_cdh::Cdh5::Hadoop::Directory[$title]
 
     if $ensure == 'present' {
-        exec { "puppet-cdh::cdh5::hadoop::directory ${title}":
+        exec { "puppet_cdh::cdh5::hadoop::directory ${title}":
             command => "/usr/bin/hdfs dfs -mkdir ${path} && /usr/bin/hdfs dfs -chmod ${mode} ${path} && /usr/bin/hdfs dfs -chown ${owner}:${group} ${path}",
             unless  => [ '[ ! command -v /usr/bin/hdfs ] > /dev/null 2>&1', "/usr/bin/hdfs dfs -test -e ${path}"],
             path    => '/usr/bin:/bin',
@@ -45,7 +45,7 @@ define puppet-cdh::cdh5::hadoop::directory (
         }
     }
     else {
-        exec { "puppet-cdh::cdh5::hadoop::directory ${title}":
+        exec { "puppet_cdh::cdh5::hadoop::directory ${title}":
             command => "/usr/bin/hdfs dfs -rm -R ${path}",
             onlyif  => "test -f /usr/bin/hdfs && /usr/bin/hdfs dfs -test -e ${path}",
             user    => 'hdfs',

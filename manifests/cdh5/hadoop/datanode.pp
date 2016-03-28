@@ -1,8 +1,8 @@
-# == Class puppet-cdh::cdh5::hadoop::datanode
+# == Class puppet_cdh::cdh5::hadoop::datanode
 # Installs and starts up a Hadoop DataNode.
 #
-class puppet-cdh::cdh5::hadoop::datanode {
-    Class['puppet-cdh::cdh5::hadoop'] -> Class['puppet-cdh::cdh5::hadoop::datanode']
+class puppet_cdh::cdh5::hadoop::datanode {
+    Class['puppet_cdh::cdh5::hadoop'] -> Class['puppet_cdh::cdh5::hadoop::datanode']
 
     # install jobtracker daemon package
     package { 'hadoop-hdfs-datanode':

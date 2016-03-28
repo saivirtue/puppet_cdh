@@ -116,61 +116,61 @@
 #   $yarn_site_extra_properties               - Hash of extra property names to values that will be
 #                                               be rendered in yarn-site.xml.erb.  Default: undef
 #
-class puppet-cdh::cdh5::hadoop (
+class puppet_cdh::cdh5::hadoop (
   $namenode_hosts,
   $dfs_name_dir,
-  $cluster_name                   = $puppet-cdh::cdh5::hadoop::defaults::cluster_name,
-  $journalnode_hosts              = $puppet-cdh::cdh5::hadoop::defaults::journalnode_hosts,
-  $dfs_journalnode_edits_dir      = $puppet-cdh::cdh5::hadoop::defaults::dfs_journalnode_edits_dir,
-  $datanode_mounts                = $puppet-cdh::cdh5::hadoop::defaults::datanode_mounts,
-  $dfs_data_path                  = $puppet-cdh::cdh5::hadoop::defaults::dfs_data_path,
+  $cluster_name                   = $puppet_cdh::cdh5::hadoop::defaults::cluster_name,
+  $journalnode_hosts              = $puppet_cdh::cdh5::hadoop::defaults::journalnode_hosts,
+  $dfs_journalnode_edits_dir      = $puppet_cdh::cdh5::hadoop::defaults::dfs_journalnode_edits_dir,
+  $datanode_mounts                = $puppet_cdh::cdh5::hadoop::defaults::datanode_mounts,
+  $dfs_data_path                  = $puppet_cdh::cdh5::hadoop::defaults::dfs_data_path,
   $resourcemanager_hosts          = $namenode_hosts,
-  $zookeeper_hosts                = $puppet-cdh::cdh5::hadoop::defaults::zookeeper_hosts,
-  $yarn_local_path                = $puppet-cdh::cdh5::hadoop::defaults::yarn_local_path,
-  $yarn_logs_path                 = $puppet-cdh::cdh5::hadoop::defaults::yarn_logs_path,
-  $dfs_block_size                 = $puppet-cdh::cdh5::hadoop::defaults::dfs_block_size,
-  $enable_jmxremote               = $puppet-cdh::cdh5::hadoop::defaults::enable_jmxremote,
-  $webhdfs_enabled                = $puppet-cdh::cdh5::hadoop::defaults::webhdfs_enabled,
-  $httpfs_enabled                 = $puppet-cdh::cdh5::hadoop::defaults::httpfs_enabled,
-  $io_file_buffer_size            = $puppet-cdh::cdh5::hadoop::defaults::io_file_buffer_size,
-  $mapreduce_system_dir           = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_system_dir,
-  $mapreduce_map_tasks_maximum    = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_map_tasks_maximum,
-  $mapreduce_reduce_tasks_maximum = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_reduce_tasks_maximum,
-  $mapreduce_job_reuse_jvm_num_tasks           = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_job_reuse_jvm_num_tasks,
-  $mapreduce_reduce_shuffle_parallelcopies     = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_reduce_shuffle_parallelcopies,
-  $mapreduce_map_memory_mb        = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_map_memory_mb,
-  $mapreduce_reduce_memory_mb     = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_reduce_memory_mb,
-  $yarn_app_mapreduce_am_resource_mb           = $puppet-cdh::cdh5::hadoop::defaults::yarn_app_mapreduce_am_resource_mb,
-  $yarn_app_mapreduce_am_command_opts          = $puppet-cdh::cdh5::hadoop::defaults::yarn_app_mapreduce_am_command_opts,
-  $yarn_app_mapreduce_am_job_client_port_range = $puppet-cdh::cdh5::hadoop::defaults::yarn_app_mapreduce_am_job_client_port_range,
-  $mapreduce_task_io_sort_mb      = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_task_io_sort_mb,
-  $mapreduce_task_io_sort_factor  = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_task_io_sort_factor,
-  $mapreduce_map_java_opts        = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_map_java_opts,
-  $mapreduce_reduce_java_opts     = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_reduce_java_opts,
-  $mapreduce_shuffle_port         = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_shuffle_port,
-  $mapreduce_intermediate_compression          = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_intermediate_compression,
-  $mapreduce_intermediate_compression_codec    = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_intermediate_compression_codec,
-  $mapreduce_output_compression   = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_output_compession,
-  $mapreduce_output_compression_codec          = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_output_compession_codec,
-  $mapreduce_output_compression_type           = $puppet-cdh::cdh5::hadoop::defaults::mapreduce_output_compression_type,
-  $yarn_nodemanager_resource_memory_mb         = $puppet-cdh::cdh5::hadoop::defaults::yarn_nodemanager_resource_memory_mb,
-  $yarn_nodemanager_resource_cpu_vcores        = $puppet-cdh::cdh5::hadoop::defaults::yarn_nodemanager_resource_cpu_vcores,
-  $yarn_scheduler_minimum_allocation_mb        = $puppet-cdh::cdh5::hadoop::defaults::yarn_scheduler_minimum_allocation_mb,
-  $yarn_scheduler_maximum_allocation_mb        = $puppet-cdh::cdh5::hadoop::defaults::yarn_scheduler_maximum_allocation_mb,
-  $yarn_scheduler_minimum_allocation_vcores    = $puppet-cdh::cdh5::hadoop::defaults::yarn_scheduler_minimum_allocation_vcores,
-  $yarn_scheduler_maximum_allocation_vcores    = $puppet-cdh::cdh5::hadoop::defaults::yarn_scheduler_maximum_allocation_vcores,
-  $hadoop_heapsize                = $puppet-cdh::cdh5::hadoop::defaults::hadoop_heapsize,
-  $hadoop_namenode_opts           = $puppet-cdh::cdh5::hadoop::defaults::hadoop_namenode_opts,
-  $yarn_heapsize                  = $puppet-cdh::cdh5::hadoop::defaults::yarn_heapsize,
-  $dfs_datanode_hdfs_blocks_metadata_enabled   = $puppet-cdh::cdh5::hadoop::defaults::dfs_datanode_hdfs_blocks_metadata_enabled,
-  $ganglia_hosts                  = $puppet-cdh::cdh5::hadoop::defaults::ganglia_hosts,
-  $net_topology_script_template   = $puppet-cdh::cdh5::hadoop::defaults::net_topology_script_template,
-  $gelf_logging_enabled           = $puppet-cdh::cdh5::hadoop::defaults::gelf_logging_enabled,
-  $gelf_logging_host              = $puppet-cdh::cdh5::hadoop::defaults::gelf_logging_host,
-  $gelf_logging_port              = $puppet-cdh::cdh5::hadoop::defaults::gelf_logging_port,
-  $fair_scheduler_template        = $puppet-cdh::cdh5::hadoop::defaults::fair_scheduler_template,
-  $yarn_site_extra_properties     = $puppet-cdh::cdh5::hadoop::defaults::yarn_site_extra_properties,) inherits 
-puppet-cdh::cdh5::hadoop::defaults {
+  $zookeeper_hosts                = $puppet_cdh::cdh5::hadoop::defaults::zookeeper_hosts,
+  $yarn_local_path                = $puppet_cdh::cdh5::hadoop::defaults::yarn_local_path,
+  $yarn_logs_path                 = $puppet_cdh::cdh5::hadoop::defaults::yarn_logs_path,
+  $dfs_block_size                 = $puppet_cdh::cdh5::hadoop::defaults::dfs_block_size,
+  $enable_jmxremote               = $puppet_cdh::cdh5::hadoop::defaults::enable_jmxremote,
+  $webhdfs_enabled                = $puppet_cdh::cdh5::hadoop::defaults::webhdfs_enabled,
+  $httpfs_enabled                 = $puppet_cdh::cdh5::hadoop::defaults::httpfs_enabled,
+  $io_file_buffer_size            = $puppet_cdh::cdh5::hadoop::defaults::io_file_buffer_size,
+  $mapreduce_system_dir           = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_system_dir,
+  $mapreduce_map_tasks_maximum    = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_map_tasks_maximum,
+  $mapreduce_reduce_tasks_maximum = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_reduce_tasks_maximum,
+  $mapreduce_job_reuse_jvm_num_tasks           = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_job_reuse_jvm_num_tasks,
+  $mapreduce_reduce_shuffle_parallelcopies     = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_reduce_shuffle_parallelcopies,
+  $mapreduce_map_memory_mb        = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_map_memory_mb,
+  $mapreduce_reduce_memory_mb     = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_reduce_memory_mb,
+  $yarn_app_mapreduce_am_resource_mb           = $puppet_cdh::cdh5::hadoop::defaults::yarn_app_mapreduce_am_resource_mb,
+  $yarn_app_mapreduce_am_command_opts          = $puppet_cdh::cdh5::hadoop::defaults::yarn_app_mapreduce_am_command_opts,
+  $yarn_app_mapreduce_am_job_client_port_range = $puppet_cdh::cdh5::hadoop::defaults::yarn_app_mapreduce_am_job_client_port_range,
+  $mapreduce_task_io_sort_mb      = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_task_io_sort_mb,
+  $mapreduce_task_io_sort_factor  = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_task_io_sort_factor,
+  $mapreduce_map_java_opts        = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_map_java_opts,
+  $mapreduce_reduce_java_opts     = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_reduce_java_opts,
+  $mapreduce_shuffle_port         = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_shuffle_port,
+  $mapreduce_intermediate_compression          = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_intermediate_compression,
+  $mapreduce_intermediate_compression_codec    = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_intermediate_compression_codec,
+  $mapreduce_output_compression   = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_output_compession,
+  $mapreduce_output_compression_codec          = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_output_compession_codec,
+  $mapreduce_output_compression_type           = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_output_compression_type,
+  $yarn_nodemanager_resource_memory_mb         = $puppet_cdh::cdh5::hadoop::defaults::yarn_nodemanager_resource_memory_mb,
+  $yarn_nodemanager_resource_cpu_vcores        = $puppet_cdh::cdh5::hadoop::defaults::yarn_nodemanager_resource_cpu_vcores,
+  $yarn_scheduler_minimum_allocation_mb        = $puppet_cdh::cdh5::hadoop::defaults::yarn_scheduler_minimum_allocation_mb,
+  $yarn_scheduler_maximum_allocation_mb        = $puppet_cdh::cdh5::hadoop::defaults::yarn_scheduler_maximum_allocation_mb,
+  $yarn_scheduler_minimum_allocation_vcores    = $puppet_cdh::cdh5::hadoop::defaults::yarn_scheduler_minimum_allocation_vcores,
+  $yarn_scheduler_maximum_allocation_vcores    = $puppet_cdh::cdh5::hadoop::defaults::yarn_scheduler_maximum_allocation_vcores,
+  $hadoop_heapsize                = $puppet_cdh::cdh5::hadoop::defaults::hadoop_heapsize,
+  $hadoop_namenode_opts           = $puppet_cdh::cdh5::hadoop::defaults::hadoop_namenode_opts,
+  $yarn_heapsize                  = $puppet_cdh::cdh5::hadoop::defaults::yarn_heapsize,
+  $dfs_datanode_hdfs_blocks_metadata_enabled   = $puppet_cdh::cdh5::hadoop::defaults::dfs_datanode_hdfs_blocks_metadata_enabled,
+  $ganglia_hosts                  = $puppet_cdh::cdh5::hadoop::defaults::ganglia_hosts,
+  $net_topology_script_template   = $puppet_cdh::cdh5::hadoop::defaults::net_topology_script_template,
+  $gelf_logging_enabled           = $puppet_cdh::cdh5::hadoop::defaults::gelf_logging_enabled,
+  $gelf_logging_host              = $puppet_cdh::cdh5::hadoop::defaults::gelf_logging_host,
+  $gelf_logging_port              = $puppet_cdh::cdh5::hadoop::defaults::gelf_logging_port,
+  $fair_scheduler_template        = $puppet_cdh::cdh5::hadoop::defaults::fair_scheduler_template,
+  $yarn_site_extra_properties     = $puppet_cdh::cdh5::hadoop::defaults::yarn_site_extra_properties,) inherits 
+puppet_cdh::cdh5::hadoop::defaults {
   # If $dfs_name_dir is a list, this will be the
   # first entry in the list.  Else just $dfs_name_dir.
   # This used in a couple of execs throughout this module.
@@ -235,7 +235,7 @@ puppet-cdh::cdh5::hadoop::defaults {
     require => Package['hadoop-client'],
   }
 
-  puppet-cdh::cdh5::alternative { 'hadoop-conf':
+  puppet_cdh::cdh5::alternative { 'hadoop-conf':
     link => '/etc/hadoop/conf',
     path => $config_directory,
   }
@@ -279,27 +279,27 @@ puppet-cdh::cdh5::hadoop::defaults {
     content => template($fair_scheduler_template),
   }
 
-  file { "${config_directory}/log4j.properties": content => template('puppet-cdh/hadoop/log4j.properties.erb'), }
+  file { "${config_directory}/log4j.properties": content => template('puppet_cdh/hadoop/log4j.properties.erb'), }
 
-  file { "${config_directory}/core-site.xml": content => template('puppet-cdh/hadoop/core-site.xml.erb'), }
+  file { "${config_directory}/core-site.xml": content => template('puppet_cdh/hadoop/core-site.xml.erb'), }
 
-  file { "${config_directory}/hdfs-site.xml": content => template('puppet-cdh/hadoop/hdfs-site.xml.erb'), }
+  file { "${config_directory}/hdfs-site.xml": content => template('puppet_cdh/hadoop/hdfs-site.xml.erb'), }
 
-  file { "${config_directory}/hadoop-env.sh": content => template('puppet-cdh/hadoop/hadoop-env.sh.erb'), }
+  file { "${config_directory}/hadoop-env.sh": content => template('puppet_cdh/hadoop/hadoop-env.sh.erb'), }
 
-  file { "${config_directory}/mapred-site.xml": content => template('puppet-cdh/hadoop/mapred-site.xml.erb'), }
+  file { "${config_directory}/mapred-site.xml": content => template('puppet_cdh/hadoop/mapred-site.xml.erb'), }
 
-  file { "${config_directory}/yarn-site.xml": content => template('puppet-cdh/hadoop/yarn-site.xml.erb'), }
+  file { "${config_directory}/yarn-site.xml": content => template('puppet_cdh/hadoop/yarn-site.xml.erb'), }
 
-  file { "${config_directory}/yarn-env.sh": content => template('puppet-cdh/hadoop/yarn-env.sh.erb'), }
+  file { "${config_directory}/yarn-env.sh": content => template('puppet_cdh/hadoop/yarn-env.sh.erb'), }
 
-  file { "${config_directory}/container-executor.cfg": content => template('puppet-cdh/hadoop/container-executor.cfg.erb'), }
+  file { "${config_directory}/container-executor.cfg": content => template('puppet_cdh/hadoop/container-executor.cfg.erb'), }
 
 #TODO : move the ulimits to proper place
 #  $service_name = 'hdfs'
-#  file { "/etc/security/limits.d/hdfs.conf": content => template('puppet-cdh/os/ulimits.conf.erb'), }
+#  file { "/etc/security/limits.d/hdfs.conf": content => template('puppet_cdh/os/ulimits.conf.erb'), }
 #  $service_name = 'yarn'
-#  file { "/etc/security/limits.d/yarn.conf": content => template('puppet-cdh/os/ulimits.conf.erb'), }
+#  file { "/etc/security/limits.d/yarn.conf": content => template('puppet_cdh/os/ulimits.conf.erb'), }
 
   # Render hadoop-metrics2.properties
   # if we have Ganglia Hosts to send metrics to.
@@ -310,7 +310,7 @@ puppet-cdh::cdh5::hadoop::defaults {
 
   file { "${config_directory}/hadoop-metrics2.properties":
     ensure  => $hadoop_metrics2_ensure,
-    content => template('puppet-cdh/hadoop/hadoop-metrics2.properties.erb'),
+    content => template('puppet_cdh/hadoop/hadoop-metrics2.properties.erb'),
   }
 
   # If the current node is meant to be JournalNode,
@@ -318,6 +318,6 @@ puppet-cdh::cdh5::hadoop::defaults {
   # be started at any time.
   if ($journalnode_hosts and (($::fqdn and $::fqdn in $journalnode_hosts) or ($::ipaddress and $::ipaddress in $journalnode_hosts) 
   or ($::ipaddress_eth1 and $::ipaddress_eth1 in $journalnode_hosts))) {
-    include puppet-cdh::cdh5::hadoop::journalnode
+    include puppet_cdh::cdh5::hadoop::journalnode
   }
 }

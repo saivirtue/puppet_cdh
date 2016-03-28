@@ -14,7 +14,7 @@
 #       path    => $config_directory,
 #   }
 #
-define puppet-cdh::cdh5::alternative(
+define puppet_cdh::cdh5::alternative(
     $link,
     $path,
     $priority = 50

@@ -8,7 +8,7 @@ node 'puppet-cdh' {
   }
   */
   #install CDH packages
-  class { 'puppet-cdh':
+  class { 'puppet_cdh':
     install_cmserver => false,
     use_parcels      => false,
     ensure           => present,

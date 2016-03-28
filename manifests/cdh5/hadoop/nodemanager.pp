@@ -1,8 +1,8 @@
-# == Class puppet-cdh::cdh5::hadoop::nodemanager
+# == Class puppet_cdh::cdh5::hadoop::nodemanager
 # Installs and configures a Hadoop NodeManager worker node.
 #
-class puppet-cdh::cdh5::hadoop::nodemanager {
-    Class['puppet-cdh::cdh5::hadoop'] -> Class['puppet-cdh::cdh5::hadoop::nodemanager']
+class puppet_cdh::cdh5::hadoop::nodemanager {
+    Class['puppet_cdh::cdh5::hadoop'] -> Class['puppet_cdh::cdh5::hadoop::nodemanager']
 
 
     package { ['hadoop-yarn-nodemanager', 'hadoop-mapreduce']:

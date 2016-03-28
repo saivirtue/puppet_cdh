@@ -1,4 +1,4 @@
-# == Class: puppet-cdh::cdh5::repo
+# == Class: puppet_cdh::cdh5::repo
 #
 # This class handles installing the Cloudera CDH software repositories.
 #
@@ -44,7 +44,7 @@
 #
 # === Sample Usage:
 #
-#   class { 'puppet-cdh::cdh5::repo':
+#   class { 'puppet_cdh::cdh5::repo':
 #     version => '4.1',
 #   }
 #
@@ -57,16 +57,16 @@
 #
 # Copyright (C) 2013 Mike Arnold, unless otherwise noted.
 #
-class puppet-cdh::cdh5::repo (
-  $ensure         = $puppet-cdh::params::ensure,
-  $reposerver     = $puppet-cdh::params::cdh_reposerver,
-  $repopath       = $puppet-cdh::params::cdh5_repopath,
-  $version        = $puppet-cdh::params::cdh_version,
-  $aptkey         = $puppet-cdh::params::cdh_aptkey,
-  $proxy          = $puppet-cdh::params::proxy,
-  $proxy_username = $puppet-cdh::params::proxy_username,
-  $proxy_password = $puppet-cdh::params::proxy_password
-) inherits puppet-cdh::params {
+class puppet_cdh::cdh5::repo (
+  $ensure         = $puppet_cdh::params::ensure,
+  $reposerver     = $puppet_cdh::params::cdh_reposerver,
+  $repopath       = $puppet_cdh::params::cdh5_repopath,
+  $version        = $puppet_cdh::params::cdh_version,
+  $aptkey         = $puppet_cdh::params::cdh_aptkey,
+  $proxy          = $puppet_cdh::params::proxy,
+  $proxy_username = $puppet_cdh::params::proxy_username,
+  $proxy_password = $puppet_cdh::params::proxy_password
+) inherits puppet_cdh::params {
   case $ensure {
     /(present)/: {
       $enabled = '1'
@@ -87,8 +87,8 @@ class puppet-cdh::cdh5::repo (
         gpgcheck       => 1,
         gpgkey         => "${reposerver}${repopath}RPM-GPG-KEY-cloudera",
         baseurl        => "${reposerver}${repopath}${version}/",
-        priority       => $puppet-cdh::params::yum_priority,
-        protect        => $puppet-cdh::params::yum_protect,
+        priority       => $puppet_cdh::params::yum_priority,
+        protect        => $puppet_cdh::params::yum_protect,
         proxy          => $proxy,
         proxy_username => $proxy_username,
         proxy_password => $proxy_password,
@@ -112,7 +112,7 @@ class puppet-cdh::cdh5::repo (
         gpgkey      => "${reposerver}${repopath}RPM-GPG-KEY-cloudera",
         baseurl     => "${reposerver}${repopath}${version}/",
         autorefresh => 1,
-        priority    => $puppet-cdh::params::yum_priority,
+        priority    => $puppet_cdh::params::yum_priority,
       }
 
       file { '/etc/zypp/repos.d/cloudera-cdh5.repo':
@@ -134,7 +134,7 @@ class puppet-cdh::cdh5::repo (
               repos        => 'contrib',
               key          => $aptkey,
               key_source   => "${reposerver}${repopath}archive.key",
-              architecture => $puppet-cdh::params::architecture,
+              architecture => $puppet_cdh::params::architecture,
               pin          => '501'
           }
       } else {
@@ -144,7 +144,7 @@ class puppet-cdh::cdh5::repo (
               repos        => 'contrib',
               key          => $aptkey,
               key_source   => "${reposerver}${repopath}archive.key",
-              architecture => $puppet-cdh::params::architecture,
+              architecture => $puppet_cdh::params::architecture,
           }
       }
 

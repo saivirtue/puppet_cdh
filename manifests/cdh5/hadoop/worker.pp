@@ -1,4 +1,4 @@
-# == Class puppet-cdh::cdh5::hadoop::worker
+# == Class puppet_cdh::cdh5::hadoop::worker
 # Wrapper class for Hadoop Worker node services:
 # - DataNode
 # - NodeManager (YARN)
@@ -9,17 +9,17 @@
 # formatted and mounted properly yourself; This puppet module does not
 # manage them.
 #
-class puppet-cdh::cdh5::hadoop::worker {
-    Class['puppet-cdh::cdh5::hadoop'] -> Class['puppet-cdh::cdh5::hadoop::worker']
+class puppet_cdh::cdh5::hadoop::worker {
+    Class['puppet_cdh::cdh5::hadoop'] -> Class['puppet_cdh::cdh5::hadoop::worker']
 
-    puppet-cdh::cdh5::hadoop::worker::paths { $::puppet-cdh::cdh5::hadoop::datanode_mounts: }
+    puppet_cdh::cdh5::hadoop::worker::paths { $::puppet_cdh::cdh5::hadoop::datanode_mounts: }
 
-    class { 'puppet-cdh::cdh5::hadoop::datanode':
-        require => puppet-cdh::Cdh5::Hadoop::Worker::Paths[$::puppet-cdh::cdh5::hadoop::datanode_mounts],
+    class { 'puppet_cdh::cdh5::hadoop::datanode':
+        require => Puppet_cdh::Cdh5::Hadoop::Worker::Paths[$::puppet_cdh::cdh5::hadoop::datanode_mounts],
     }
 
     # YARN uses NodeManager.
-    class { 'puppet-cdh::cdh5::hadoop::nodemanager':
-        require => puppet-cdh::Cdh5::Hadoop::Worker::Paths[$::puppet-cdh::cdh5::hadoop::datanode_mounts],
+    class { 'puppet_cdh::cdh5::hadoop::nodemanager':
+        require => Puppet_cdh::Cdh5::Hadoop::Worker::Paths[$::puppet_cdh::cdh5::hadoop::datanode_mounts],
     }
 }

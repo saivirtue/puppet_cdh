@@ -13,7 +13,7 @@
 #
 # Copyright (C) 2013 Mike Arnold, unless otherwise noted.
 #
-class puppet-cdh::params {
+class puppet_cdh::params {
   # Customize these values if you (for example) mirror public YUM repos to your
   # internal network.
   $yum_priority = '50'

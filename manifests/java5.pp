@@ -1,4 +1,4 @@
-# == Class: puppet-cdh::java5
+# == Class: puppet_cdh::java5
 #
 # This class handles installing Oracle JDK as shipped by Cloudera.
 #
@@ -25,7 +25,7 @@
 #
 # === Sample Usage:
 #
-#   class { 'puppet-cdh::java5': }
+#   class { 'puppet_cdh::java5': }
 #
 # === Authors:
 #
@@ -35,11 +35,11 @@
 #
 # Copyright (C) 2013 Mike Arnold, unless otherwise noted.
 #
-class puppet-cdh::java5 (
-  $ensure       = $puppet-cdh::params::ensure,
-  $package_name = $puppet-cdh::params::java5_package_name,
-  $autoupgrade  = $puppet-cdh::params::safe_autoupgrade
-) inherits puppet-cdh::params {
+class puppet_cdh::java5 (
+  $ensure       = $puppet_cdh::params::ensure,
+  $package_name = $puppet_cdh::params::java5_package_name,
+  $autoupgrade  = $puppet_cdh::params::safe_autoupgrade
+) inherits puppet_cdh::params {
   # Validate our booleans
   validate_bool($autoupgrade)
 
@@ -64,15 +64,15 @@ class puppet-cdh::java5 (
     }
   }
 
-  anchor { 'puppet-cdh::java5::begin': }
-  anchor { 'puppet-cdh::java5::end': }
+  anchor { 'puppet_cdh::java5::begin': }
+  anchor { 'puppet_cdh::java5::end': }
 
   package { 'jdk':
     ensure  => $package_ensure,
     name    => $package_name,
     tag     => [ 'cloudera-manager', 'jdk', 'oracle', ],
-    require => Anchor['puppet-cdh::java5::begin'],
-    before  => Anchor['puppet-cdh::java5::end'],
+    require => Anchor['puppet_cdh::java5::begin'],
+    before  => Anchor['puppet_cdh::java5::end'],
   }
 
   file { 'java-profile.d':
@@ -82,8 +82,8 @@ class puppet-cdh::java5 (
     mode    => '0755',
     owner   => 'root',
     group   => 'root',
-    require => Anchor['puppet-cdh::java5::begin'],
-    before  => Anchor['puppet-cdh::java5::end'],
+    require => Anchor['puppet_cdh::java5::begin'],
+    before  => Anchor['puppet_cdh::java5::end'],
   }
 
   case $::operatingsystem {
@@ -94,23 +94,23 @@ class puppet-cdh::java5 (
         mode    => '0744',
         owner   => 'root',
         group   => 'root',
-        require => [ Anchor['puppet-cdh::java5::begin'], Package['jdk'], ],
-        before  => Anchor['puppet-cdh::java5::end'],
+        require => [ Anchor['puppet_cdh::java5::begin'], Package['jdk'], ],
+        before  => Anchor['puppet_cdh::java5::end'],
       }
 
       exec { '/usr/java/_mklinks.sh':
         command     => '/usr/java/_mklinks.sh',
         refreshonly => true,
         path        => '/bin:/usr/bin:/sbin:/usr/sbin',
-        require     => [ Anchor['puppet-cdh::java5::begin'], File['/usr/java/_mklinks.sh'], ],
+        require     => [ Anchor['puppet_cdh::java5::begin'], File['/usr/java/_mklinks.sh'], ],
         subscribe   => Package['jdk'],
 	# Add by Sam Cho : avoid refresh if file not exists
 	onlyif      => 'test -f /usr/java/_mklinks.sh'
       }
 
       Exec {
-        require => Anchor['puppet-cdh::java5::begin'],
-        before  => Anchor['puppet-cdh::java5::end'],
+        require => Anchor['puppet_cdh::java5::begin'],
+        before  => Anchor['puppet_cdh::java5::end'],
       }
 
       # Remove the old config from pre-1.0.0 module releases.

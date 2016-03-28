@@ -1,4 +1,4 @@
-# == Class: puppet-cdh::cdh5
+# == Class: puppet_cdh::cdh5
 #
 # This class handles installing the Cloudera Distribution, including Apache
 # Hadoop.
@@ -28,7 +28,7 @@
 #
 # === Sample Usage:
 #
-#   class { 'puppet-cdh::cdh5': }
+#   class { 'puppet_cdh::cdh5': }
 #
 # === Authors:
 #
@@ -50,28 +50,28 @@
 #  the specific language governing permissions and limitations under the
 #  License.
 #
-class puppet-cdh::cdh5 (
-  $ensure         = $puppet-cdh::params::ensure,
-  $autoupgrade    = $puppet-cdh::params::safe_autoupgrade,
-  $service_ensure = $puppet-cdh::params::service_ensure) inherits puppet-cdh::params {
+class puppet_cdh::cdh5 (
+  $ensure         = $puppet_cdh::params::ensure,
+  $autoupgrade    = $puppet_cdh::params::safe_autoupgrade,
+  $service_ensure = $puppet_cdh::params::service_ensure) inherits puppet_cdh::params {
   # Validate our booleans
   validate_bool($autoupgrade)
-  # anchor { 'puppet-cdh::cdh5::begin': }
-  # anchor { 'puppet-cdh::cdh5::end': }
+  # anchor { 'puppet_cdh::cdh5::begin': }
+  # anchor { 'puppet_cdh::cdh5::end': }
 
   #  Class {
-  # require => Anchor['puppet-cdh::cdh5::begin'],
-  # before  => Anchor['puppet-cdh::cdh5::end'],
+  # require => Anchor['puppet_cdh::cdh5::begin'],
+  # before  => Anchor['puppet_cdh::cdh5::end'],
   #  }
-  #  class { 'puppet-cdh::cdh5::bigtop':
+  #  class { 'puppet_cdh::cdh5::bigtop':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  class { 'puppet-cdh::cdh5::hadoop':
+  class { 'puppet_cdh::cdh5::hadoop':
     #    ensure      => $ensure,
     #    autoupgrade => $autoupgrade,
     cluster_name               => 'mycluster',
-    namenode_hosts             => ['puppet-cdh'],
+    namenode_hosts             => ['puppet_cdh'],
     dfs_name_dir               => '/var/lib/hadoop/name',
     datanode_mounts            => '/dfs/dn',
     yarn_nodemanager_resource_memory_mb      => '6144',
@@ -88,86 +88,86 @@ class puppet-cdh::cdh5 (
     mapreduce_reduce_memory_mb => '1024',
   }
 
-  class { 'puppet-cdh::cdh5::hadoop::master':
+  class { 'puppet_cdh::cdh5::hadoop::master':
   }
 
-  class { 'puppet-cdh::cdh5::hadoop::worker':
+  class { 'puppet_cdh::cdh5::hadoop::worker':
   }
 
-  #  class { 'puppet-cdh::cdh5::hue':
+  #  class { 'puppet_cdh::cdh5::hue':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  #  class { 'puppet-cdh::cdh5::hue::plugins':
+  #  class { 'puppet_cdh::cdh5::hue::plugins':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-    class { 'puppet-cdh::cdh5::hbase::master':
+    class { 'puppet_cdh::cdh5::hbase::master':
       cluster_name => 'mycluster',
-      hostname     => 'puppet-cdh',
+      hostname     => 'puppet_cdh',
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
     }
-    class { 'puppet-cdh::cdh5::hbase::regionserver':
+    class { 'puppet_cdh::cdh5::hbase::regionserver':
       cluster_name => 'mycluster',
-      hostname     => 'puppet-cdh',
+      hostname     => 'puppet_cdh',
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
     }
-  #  class { 'puppet-cdh::cdh5::hive':
+  #  class { 'puppet_cdh::cdh5::hive':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  #  class { 'puppet-cdh::cdh5::oozie':
+  #  class { 'puppet_cdh::cdh5::oozie':
   #    ensure         => $ensure,
   #    autoupgrade    => $autoupgrade,
   #    service_ensure => $service_ensure,
   #  }
-  #  class { 'puppet-cdh::cdh5::pig':
+  #  class { 'puppet_cdh::cdh5::pig':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  class { 'puppet-cdh::cdh5::zookeeper':
+  class { 'puppet_cdh::cdh5::zookeeper':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   }
-  #  class { 'puppet-cdh::cdh5::flume':
+  #  class { 'puppet_cdh::cdh5::flume':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  #  class { 'puppet-cdh::cdh5::impala':
+  #  class { 'puppet_cdh::cdh5::impala':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  #  class { 'puppet-cdh::cdh5::search':
+  #  class { 'puppet_cdh::cdh5::search':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  #  class { 'puppet-cdh::cdh5::search::lilyhbase':
+  #  class { 'puppet_cdh::cdh5::search::lilyhbase':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  #  class { 'puppet-cdh::cdh5::crunch':
+  #  class { 'puppet_cdh::cdh5::crunch':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  #  class { 'puppet-cdh::cdh5::hcatalog':
+  #  class { 'puppet_cdh::cdh5::hcatalog':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  #  class { 'puppet-cdh::cdh5::llama':
+  #  class { 'puppet_cdh::cdh5::llama':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  #  class { 'puppet-cdh::cdh5::sqoop':
+  #  class { 'puppet_cdh::cdh5::sqoop':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  #  class { 'puppet-cdh::cdh5::sqoop2':
+  #  class { 'puppet_cdh::cdh5::sqoop2':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  #  class { 'puppet-cdh::cdh5::spark':
+  #  class { 'puppet_cdh::cdh5::spark':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }

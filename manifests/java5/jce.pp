@@ -1,4 +1,4 @@
-# == Class: puppet-cdh::java5::jce
+# == Class: puppet_cdh::java5::jce
 #
 # This class handles installing Oracle Java Cryptography Extension (JCE)
 # unlimited strength jurisdiction policy files.
@@ -16,11 +16,11 @@
 #
 # === Requires:
 #
-# Class['puppet-cdh::java5']
+# Class['puppet_cdh::java5']
 #
 # === Sample Usage:
 #
-#   class { 'puppet-cdh::java5::jce': }
+#   class { 'puppet_cdh::java5::jce': }
 #
 # === Authors:
 #
@@ -30,9 +30,9 @@
 #
 # Copyright (C) 2013 Mike Arnold, unless otherwise noted.
 #
-class puppet-cdh::java5::jce (
-  $ensure      = $puppet-cdh::params::ensure
-) inherits puppet-cdh::params {
+class puppet_cdh::java5::jce (
+  $ensure      = $puppet_cdh::params::ensure
+) inherits puppet_cdh::params {
   case $ensure {
     /(present)/: {
       $file_ensure = 'present'
@@ -46,7 +46,7 @@ class puppet-cdh::java5::jce (
   }
 
   File {
-    require => Class['puppet-cdh::java5'],
+    require => Class['puppet_cdh::java5'],
   }
 
   file { '/usr/java/default/jre/lib/security/README.txt':

@@ -31,7 +31,7 @@
     }
   ],
   "license": "Open Source",
-  "name": "puppet-autocdh",
+  "name": "puppet_cdh",
   "operatingsystem_support": [],
   "project_page": "",
   "requirements": [],
