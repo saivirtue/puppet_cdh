@@ -71,7 +71,7 @@ class puppet_cdh::cdh5 (
     #    ensure      => $ensure,
     #    autoupgrade => $autoupgrade,
     cluster_name               => 'mycluster',
-    namenode_hosts             => ['puppet_cdh'],
+    namenode_hosts             => ['puppet-cdh'],
     dfs_name_dir               => '/var/lib/hadoop/name',
     datanode_mounts            => '/dfs/dn',
     yarn_nodemanager_resource_memory_mb      => '6144',
@@ -103,18 +103,16 @@ class puppet_cdh::cdh5 (
   #    autoupgrade => $autoupgrade,
   #  }
     class { 'puppet_cdh::cdh5::hbase::master':
-      cluster_name => 'mycluster',
-      hostname     => 'puppet_cdh',
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
     }
     class { 'puppet_cdh::cdh5::hbase::regionserver':
-      cluster_name => 'mycluster',
-      hostname     => 'puppet_cdh',
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
     }
   #  class { 'puppet_cdh::cdh5::hive':
+  #    metastore_host => 'puppet-cdh',
+  #    zookeeper_hosts => 'puppet-cdh',  
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }

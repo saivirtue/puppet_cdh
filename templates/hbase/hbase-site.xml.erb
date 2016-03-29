@@ -24,7 +24,12 @@ end
 
   <property>
     <name>hbase.rootdir</name>
-    <value>hdfs://<%= hostname %>:8020/hbase</value>
+    <value>hdfs://<%= @hostname %>:8020/hbase</value>
+  </property>
+  
+  <property>
+    <name>hbase.zookeeper.quorum</name>
+    <value><%= @hostname %></value>
   </property>
 
 </configuration>
