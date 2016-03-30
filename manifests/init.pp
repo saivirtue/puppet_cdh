@@ -1,7 +1,6 @@
 # == Class: puppet_cdh
 #
-# This class handles installing the Cloudera software with the intention
-# of the CDH stack being managed by Cloudera Manager.
+# The main class for installing CM and CDH
 #
 # === Parameters:
 #
@@ -238,23 +237,11 @@
 #
 # === Authors:
 #
-# Mike Arnold <mike@razorsedge.org>
+# Sam Cho <sam@is-land.com.tw>
 #
 # === Copyright:
 #
-# Copyright (C) 2013 Mike Arnold, unless otherwise noted.
-#  Copyright (c) 2011, Cloudera, Inc. All Rights Reserved.
-#
-#  Cloudera, Inc. licenses this file to you under the Apache License,
-#  Version 2.0 (the "License"). You may not use this file except in
-#  compliance with the License. You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-#  This software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-#  CONDITIONS OF ANY KIND, either express or implied. See the License for
-#  the specific language governing permissions and limitations under the
-#  License.
+# Free Usage
 #
 class puppet_cdh (
   $ensure            = $puppet_cdh::params::ensure,
@@ -304,7 +291,8 @@ class puppet_cdh (
   $proxy             = $puppet_cdh::params::proxy,
   $proxy_username    = $puppet_cdh::params::proxy_username,
   $proxy_password    = $puppet_cdh::params::proxy_password,
-  $parcel_dir        = $puppet_cdh::params::parcel_dir) inherits puppet_cdh::params {
+  $parcel_dir        = $puppet_cdh::params::parcel_dir
+  ) inherits puppet_cdh::params {
   # Validate our booleans
   validate_bool($autoupgrade)
   validate_bool($service_enable)

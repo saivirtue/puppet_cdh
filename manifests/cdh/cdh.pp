@@ -1,7 +1,6 @@
-# == Class: puppet_cdh::cdh5
+# == Class: puppet_cdh::cdh
 #
-# This class handles installing the Cloudera Distribution, including Apache
-# Hadoop.
+# This class handles installing the Cloudera Distribution, including Apache Hadoop.
 #
 # === Parameters:
 #
@@ -19,8 +18,7 @@
 #
 # === Actions:
 #
-# Installs Bigtop, Hadoop, Hue-plugins, HBase, Hive, Oozie, Pig, ZooKeeper,
-# and Flume-NG.
+# Installs Bigtop, Hadoop, Hue-plugins, HBase, Hive, Oozie, Pig, ZooKeeper, and Flume-NG.
 #
 # === Requires:
 #
@@ -32,44 +30,20 @@
 #
 # === Authors:
 #
-# Mike Arnold <mike@razorsedge.org>
+# Sam Cho <sam@is-land.com.tw>
 #
 # === Copyright:
 #
-# Copyright (C) 2013 Mike Arnold, unless otherwise noted.
-#  Copyright (c) 2011, Cloudera, Inc. All Rights Reserved.
+# Free Usage
 #
-#  Cloudera, Inc. licenses this file to you under the Apache License,
-#  Version 2.0 (the "License"). You may not use this file except in
-#  compliance with the License. You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-#  This software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-#  CONDITIONS OF ANY KIND, either express or implied. See the License for
-#  the specific language governing permissions and limitations under the
-#  License.
-#
-class puppet_cdh::cdh5 (
+class puppet_cdh::cdh::cdh (
   $ensure         = $puppet_cdh::params::ensure,
   $autoupgrade    = $puppet_cdh::params::safe_autoupgrade,
   $service_ensure = $puppet_cdh::params::service_ensure) inherits puppet_cdh::params {
   # Validate our booleans
   validate_bool($autoupgrade)
-  # anchor { 'puppet_cdh::cdh5::begin': }
-  # anchor { 'puppet_cdh::cdh5::end': }
 
-  #  Class {
-  # require => Anchor['puppet_cdh::cdh5::begin'],
-  # before  => Anchor['puppet_cdh::cdh5::end'],
-  #  }
-  #  class { 'puppet_cdh::cdh5::bigtop':
-  #    ensure      => $ensure,
-  #    autoupgrade => $autoupgrade,
-  #  }
-  class { 'puppet_cdh::cdh5::hadoop':
-    #    ensure      => $ensure,
-    #    autoupgrade => $autoupgrade,
+  class { 'puppet_cdh::cdh::hadoop':
     cluster_name               => 'mycluster',
     namenode_hosts             => ['puppet-cdh'],
     dfs_name_dir               => '/var/lib/hadoop/name',
