@@ -16,8 +16,11 @@ node 'puppet-cdh' {
 #  }
 
 include puppet_cdh::params
+#Package["ruby-augeas"] -> Augeas <| |>
 
   notify{'test get local variable':
     message => "$puppet_cdh::cdh::hadoop::params::cluster_name",
   }
+  
+  include puppet_cdh::cdh::zookeeper::zookeeper
 }

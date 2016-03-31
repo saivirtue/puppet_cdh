@@ -31,12 +31,12 @@
     }
   ],
   "license": "Open Source",
-  "name": "puppet_cdh",
+  "name": "sam/puppet_cdh",
   "operatingsystem_support": [],
   "project_page": "",
   "requirements": [],
-  "source": "",
-  "summary": "",
+  "source": "github.com/saivirtue/puppet_cdh",
+  "summary": "Automation of CDH",
   "tags": [],
   "version": "0.1.0"
 }

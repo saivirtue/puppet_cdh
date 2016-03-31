@@ -30,7 +30,7 @@
 #
 # Copyright (C) 2013 Mike Arnold, unless otherwise noted.
 #
-class puppet_cdh::java5::jce (
+class puppet_cdh::java::jce (
   $ensure      = $puppet_cdh::params::ensure
 ) inherits puppet_cdh::params {
   case $ensure {
@@ -46,7 +46,7 @@ class puppet_cdh::java5::jce (
   }
 
   File {
-    require => Class['puppet_cdh::java5'],
+    require => Class['puppet_cdh::java::java'],
   }
 
   file { '/usr/java/default/jre/lib/security/README.txt':

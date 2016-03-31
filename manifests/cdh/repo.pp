@@ -1,4 +1,4 @@
-# == Class: puppet_cdh::cdh5::repo
+# == Class: puppet_cdh::cdh::repo
 #
 # This class handles installing the Cloudera CDH software repositories.
 #
@@ -50,22 +50,18 @@
 #
 # === Authors:
 #
-# Djuri Baars <dsbaars@gmail.com>
-# Mike Arnold <mike@razorsedge.org>
+# Sam Cho <sam@is-land.com.tw> <br/>
 #
 # === Copyright:
 #
-# Copyright (C) 2013 Mike Arnold, unless otherwise noted.
+# Free Usage <br/>
 #
-class puppet_cdh::cdh5::repo (
-  $ensure         = $puppet_cdh::params::ensure,
-  $reposerver     = $puppet_cdh::params::cdh_reposerver,
-  $repopath       = $puppet_cdh::params::cdh5_repopath,
-  $version        = $puppet_cdh::params::cdh_version,
-  $aptkey         = $puppet_cdh::params::cdh_aptkey,
-  $proxy          = $puppet_cdh::params::proxy,
-  $proxy_username = $puppet_cdh::params::proxy_username,
-  $proxy_password = $puppet_cdh::params::proxy_password
+class puppet_cdh::cdh::repo (
+  $ensure         = $puppet_cdh::cdh::params::ensure,
+  $reposerver     = $puppet_cdh::cdh::params::cdh_reposerver,
+  $repopath       = $puppet_cdh::cdh::params::cdh5_repopath,
+  $version        = $puppet_cdh::cdh::params::cdh_version,
+#  $aptkey         = $puppet_cdh::params::cdh_aptkey,
 ) inherits puppet_cdh::params {
   case $ensure {
     /(present)/: {
@@ -81,75 +77,70 @@ class puppet_cdh::cdh5::repo (
 
   case $::operatingsystem {
     'CentOS', 'RedHat', 'OEL', 'OracleLinux': {
-      yumrepo { 'cloudera-cdh5':
+      yumrepo { 'cloudera-cdh':
         descr          => 'Cloudera\'s Distribution for Hadoop, Version 5',
         enabled        => $enabled,
         gpgcheck       => 1,
         gpgkey         => "${reposerver}${repopath}RPM-GPG-KEY-cloudera",
         baseurl        => "${reposerver}${repopath}${version}/",
-        priority       => $puppet_cdh::params::yum_priority,
-        protect        => $puppet_cdh::params::yum_protect,
-        proxy          => $proxy,
-        proxy_username => $proxy_username,
-        proxy_password => $proxy_password,
+        priority       => $puppet_cdh::cdh::params::yum_priority,
+        protect        => $puppet_cdh::cdh::params::yum_protect,
       }
 
-      file { '/etc/yum.repos.d/cloudera-cdh5.repo':
+      file { '/etc/yum.repos.d/cloudera-cdh.repo':
         ensure  => 'file',
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
-        require => Yumrepo['cloudera-cdh5'],
+        require => Yumrepo['cloudera-cdh'],
       }
-
-      Yumrepo['cloudera-cdh5'] -> Package<|tag == 'cloudera-cdh5'|>
     }
-    'SLES': {
-      zypprepo { 'cloudera-cdh5':
-        descr       => 'Cloudera\'s Distribution for Hadoop, Version 5',
-        enabled     => $enabled,
-        gpgcheck    => 1,
-        gpgkey      => "${reposerver}${repopath}RPM-GPG-KEY-cloudera",
-        baseurl     => "${reposerver}${repopath}${version}/",
-        autorefresh => 1,
-        priority    => $puppet_cdh::params::yum_priority,
-      }
-
-      file { '/etc/zypp/repos.d/cloudera-cdh5.repo':
-        ensure => 'file',
-        owner  => 'root',
-        group  => 'root',
-        mode   => '0644',
-      }
-
-      Zypprepo['cloudera-cdh5'] -> Package<|tag == 'cloudera-cdh5'|>
-    }
-    'Debian', 'Ubuntu': {
-      include '::apt'
-
-      if ($::operatingsystem == 'Ubuntu' and $::operatingsystemrelease == '14.04') {
-          apt::source { 'cloudera-cdh5':
-              location     => "${reposerver}${repopath}",
-              release      => "${::lsbdistcodename}-cdh${version}",
-              repos        => 'contrib',
-              key          => $aptkey,
-              key_source   => "${reposerver}${repopath}archive.key",
-              architecture => $puppet_cdh::params::architecture,
-              pin          => '501'
-          }
-      } else {
-          apt::source { 'cloudera-cdh5':
-              location     => "${reposerver}${repopath}",
-              release      => "${::lsbdistcodename}-cdh${version}",
-              repos        => 'contrib',
-              key          => $aptkey,
-              key_source   => "${reposerver}${repopath}archive.key",
-              architecture => $puppet_cdh::params::architecture,
-          }
-      }
-
-      Apt::Source['cloudera-cdh5'] -> Package<|tag == 'cloudera-cdh5'|>
-    }
+#    'SLES': {
+#      zypprepo { 'cloudera-cdh5':
+#        descr       => 'Cloudera\'s Distribution for Hadoop, Version 5',
+#        enabled     => $enabled,
+#        gpgcheck    => 1,
+#        gpgkey      => "${reposerver}${repopath}RPM-GPG-KEY-cloudera",
+#        baseurl     => "${reposerver}${repopath}${version}/",
+#        autorefresh => 1,
+#        priority    => $puppet_cdh::params::yum_priority,
+#      }
+#
+#      file { '/etc/zypp/repos.d/cloudera-cdh5.repo':
+#        ensure => 'file',
+#        owner  => 'root',
+#        group  => 'root',
+#        mode   => '0644',
+#      }
+#
+#      Zypprepo['cloudera-cdh5'] -> Package<|tag == 'cloudera-cdh5'|>
+#    }
+#    'Debian', 'Ubuntu': {
+#      include '::apt'
+#
+#      if ($::operatingsystem == 'Ubuntu' and $::operatingsystemrelease == '14.04') {
+#          apt::source { 'cloudera-cdh5':
+#              location     => "${reposerver}${repopath}",
+#              release      => "${::lsbdistcodename}-cdh${version}",
+#              repos        => 'contrib',
+#              key          => $aptkey,
+#              key_source   => "${reposerver}${repopath}archive.key",
+#              architecture => $puppet_cdh::params::architecture,
+#              pin          => '501'
+#          }
+#      } else {
+#          apt::source { 'cloudera-cdh5':
+#              location     => "${reposerver}${repopath}",
+#              release      => "${::lsbdistcodename}-cdh${version}",
+#              repos        => 'contrib',
+#              key          => $aptkey,
+#              key_source   => "${reposerver}${repopath}archive.key",
+#              architecture => $puppet_cdh::params::architecture,
+#          }
+#      }
+#
+#      Apt::Source['cloudera-cdh5'] -> Package<|tag == 'cloudera-cdh5'|>
+#    }
     default: { }
   }
 }

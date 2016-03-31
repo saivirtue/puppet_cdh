@@ -12,6 +12,7 @@
 #
 class puppet_cdh::params {
   
+  include puppet_cdh::java::params
   include puppet_cdh::cdh::params
   include puppet_cdh::cdh::hadoop::params
   include puppet_cdh::cdh::hbase::params

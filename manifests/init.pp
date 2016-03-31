@@ -354,51 +354,38 @@ class puppet_cdh ( #parameters usage
   # iptables-save > /root/firewall.rules
   # /etc/init.d/iptables stop ; chkconfig iptables off
 
-
-  #  if $install_lzo {
-  #    class { 'puppet_cdh::lzo':
-  #      require => Anchor['puppet_cdh::begin'],
-  #      before  => Anchor['puppet_cdh::end'],
-  #    }
-  #  }
-
   if $install_java {
-    # TODO : Fix the dependency from cm::repo for java package
-    # Class['puppet_cdh::cm5::repo'] -> Class['puppet_cdh::java5']
-    class { 'puppet_cdh::java5':
+    Class['puppet_cdh::java::repo'] -> Class['puppet_cdh::java::java']
+    class { 'puppet_cdh::java::java':
       ensure      => $ensure,
       autoupgrade => $autoupgrade,
     }
   }
 
   if $install_jce {
-    class { 'puppet_cdh::java5::jce':
+    class { 'puppet_cdh::java::jce':
       ensure  => $ensure,
-      require => [Class['puppet_cdh::java5'],],
-      # before  => Anchor['puppet_cdh::end'],
+      require => Class['puppet_cdh::java::java'],
     }
   }
 
-  # Skip installing the CDH RPMs if we are going to use parcels.
-  if !$use_parcels {
+  # Installing the CDH RPMs if we are going to use parcels.
+  if $use_parcels {
     if $cdh_version =~ /^5/ {
-      class { 'puppet_cdh::cdh5::repo':
+      class { 'puppet_cdh::cdh::repo':
         ensure         => $ensure,
         reposerver     => $cdh_reposerver,
         repopath       => $cdh5_repopath,
         version        => $cdh_version,
-        proxy          => $proxy,
-        proxy_username => $proxy_username,
-        proxy_password => $proxy_password,
       }
       contain 'puppet_cdh::cdh5::repo'
 
-      class { 'puppet_cdh::cdh5':
+      class { 'puppet_cdh::cdh::cdh':
         ensure         => $ensure,
         autoupgrade    => $autoupgrade,
         service_ensure => $service_ensure,
       }
-      Class['puppet_cdh::cdh5::repo'] -> Class['puppet_cdh::cdh5']
+      Class['puppet_cdh::cdh::repo'] -> Class['puppet_cdh::cdh::cdh']
       #        if $install_lzo {
       #          if $cg_version !~ /^5/ {
       #            fail('Parameter $cg_version must be 5 if $cdh_version is 5.')
