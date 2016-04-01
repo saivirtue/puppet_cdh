@@ -56,13 +56,7 @@
 #
 # Free Usage <br/>
 #
-class puppet_cdh::cdh::repo (
-  $ensure         = $puppet_cdh::cdh::params::ensure,
-  $reposerver     = $puppet_cdh::cdh::params::cdh_reposerver,
-  $repopath       = $puppet_cdh::cdh::params::cdh5_repopath,
-  $version        = $puppet_cdh::cdh::params::cdh_version,
-#  $aptkey         = $puppet_cdh::params::cdh_aptkey,
-) inherits puppet_cdh::params {
+class puppet_cdh::cdh::repo inherits puppet_cdh::cdh::params {
   case $ensure {
     /(present)/: {
       $enabled = '1'
@@ -81,8 +75,8 @@ class puppet_cdh::cdh::repo (
         descr          => 'Cloudera\'s Distribution for Hadoop, Version 5',
         enabled        => $enabled,
         gpgcheck       => 1,
-        gpgkey         => "${reposerver}${repopath}RPM-GPG-KEY-cloudera",
-        baseurl        => "${reposerver}${repopath}${version}/",
+        gpgkey         => "${cdh_reposerver}${cdh_repopath}RPM-GPG-KEY-cloudera",
+        baseurl        => "${cdh_reposerver}${cdh_repopath}${cdh_version}/",
         priority       => $puppet_cdh::cdh::params::yum_priority,
         protect        => $puppet_cdh::cdh::params::yum_protect,
       }

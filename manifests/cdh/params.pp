@@ -9,7 +9,7 @@
 # === Copyright:
 # 
 # Free Usage <br/>
-class puppet_cdh::cdh::params {
+class puppet_cdh::cdh::params inherits puppet_cdh::params {
   # Customize these values if you (for example) mirror public YUM repos to your
   # internal network.
   $yum_priority = '50'
@@ -22,72 +22,13 @@ class puppet_cdh::cdh::params {
     default => $::cloudera_cdh_reposerver,
   }
 
-#  $cm_reposerver = $::cloudera_cm_reposerver ? {
-#    undef   => 'http://archive.cloudera.com',
-#    default => $::cloudera_cm_reposerver,
-#  }
-#
-#  $cs_reposerver = $::cloudera_cs_reposerver ? {
-#    undef   => 'http://archive.cloudera.com',
-#    default => $::cloudera_cs_reposerver,
-#  }
-#
-#  $cg_reposerver = $::cloudera_cg_reposerver ? {
-#    undef   => 'http://archive.cloudera.com',
-#    default => $::cloudera_cg_reposerver,
-#  }
-#
-#  $cm_server_host = $::cloudera_cm_server_host ? {
-#    undef   => 'localhost',
-#    default => $::cloudera_cm_server_host,
-#  }
-#
-#  $cm_server_port = $::cloudera_cm_server_port ? {
-#    undef   => '7182',
-#    default => $::cloudera_cm_server_port,
-#  }
-#
-#  $server_chain_file = $::cloudera_server_chain_file ? {
-#    undef   => undef,
-#    default => $::cloudera_server_chain_file,
-#  }
-#
-#  $server_keypw = $::cloudera_server_keypw ? {
-#    undef   => undef,
-#    default => $::cloudera_server_keypw,
-#  }
-
   $oozie_ext = $::cloudera_oozie_ext ? {
     undef   => 'http://archive.cloudera.com/gplextras/misc/ext-2.2.zip',
     default => $::cloudera_oozie_ext,
   }
 
-  $ensure = $::cloudera_ensure ? {
-    undef => 'present',
-    default => $::cloudera_ensure,
-  }
-
   # Since the top scope variable could be a string (if from an ENC), we might
   # need to convert it to a boolean.
-  $autoupgrade = $::cloudera_autoupgrade ? {
-    undef => false,
-    default => $::cloudera_autoupgrade,
-  }
-  if is_string($autoupgrade) {
-    $safe_autoupgrade = str2bool($autoupgrade)
-  } else {
-    $safe_autoupgrade = $autoupgrade
-  }
-
-  $service_enable = $::cloudera_service_enable ? {
-    undef => true,
-    default => $::cloudera_service_enable,
-  }
-  if is_string($service_enable) {
-    $safe_service_enable = str2bool($service_enable)
-  } else {
-    $safe_service_enable = $service_enable
-  }
 
   $cm_use_tls = $::cloudera_cm_use_tls ? {
     undef => false,
@@ -99,14 +40,14 @@ class puppet_cdh::cdh::params {
     $safe_cm_use_tls = $cm_use_tls
   }
 
-  $use_parcels = $::cloudera_use_parcels ? {
+  $use_package = $::cloudera_use_package ? {
     undef => true,
-    default => $::cloudera_use_parcels,
+    default => $::cloudera_use_package,
   }
-  if is_string($use_parcels) {
-    $safe_use_parcels = str2bool($use_parcels)
+  if is_string($use_package) {
+    $safe_use_package = str2bool($use_package)
   } else {
-    $safe_use_parcels = $use_parcels
+    $safe_use_package = $use_package
   }
 
   $install_lzo = $::cloudera_install_lzo ? {
@@ -159,9 +100,6 @@ class puppet_cdh::cdh::params {
     $majdistrelease = regsubst($::operatingsystemrelease,'^(\d+)\.(\d+)','\1')
   }
 
-  $cdh_version = '5'
-  $cm_version  = '5'
-
   $database_name = 'scm'
   $username      = 'scm'
   $password      = 'scm'
@@ -173,14 +111,13 @@ class puppet_cdh::cdh::params {
 
   case $::operatingsystem {
     'CentOS', 'RedHat', 'OEL', 'OracleLinux': {
-      $java_package_name = 'jdk'
+#      $java_package_name = 'jdk'
 #      $cdh_repopath = "/cdh4/redhat/${majdistrelease}/${::architecture}/cdh/"
 #      $cm_repopath = "/cm4/redhat/${majdistrelease}/${::architecture}/cm/"
 #      $cs_repopath = "/search/redhat/${majdistrelease}/${::architecture}/search/"
 #      $cg_repopath = "/gplextras/redhat/${majdistrelease}/${::architecture}/gplextras/"
-      $java5_package_name = 'oracle-j2sdk1.7'
 #      $cm5_repopath = "/cm5/redhat/${majdistrelease}/${::architecture}/cm/"
-      $cdh5_repopath = "/cdh5/redhat/${majdistrelease}/${::architecture}/cdh/"
+      $cdh_repopath = "/cdh5/redhat/${majdistrelease}/${::architecture}/cdh/"
 #      $cg5_repopath = "/gplextras5/redhat/${majdistrelease}/${::architecture}/gplextras/"
       $tls_dir = '/etc/pki/tls'
       $lzo_package_name = 'lzo'
@@ -246,26 +183,6 @@ class puppet_cdh::cdh::params {
     default: {
       fail("Module ${module_name} is not supported on ${::operatingsystem}")
     }
-  }
-
-  $verify_cert_file = $::cloudera_verify_cert_file ? {
-    undef   => "${tls_dir}/certs/cloudera_manager.crt",
-    default => $::cloudera_verify_cert_file,
-  }
-
-  $server_ca_file = $::cloudera_server_ca_file ? {
-    undef   => "${tls_dir}/certs/cloudera_manager-ca.crt",
-    default => $::cloudera_server_ca_file,
-  }
-
-  $server_cert_file = $::cloudera_server_cert_file ? {
-    undef   => "${tls_dir}/certs/${::fqdn}-cloudera_manager.crt",
-    default => $::cloudera_server_cert_file,
-  }
-
-  $server_key_file = $::cloudera_server_key_file ? {
-    undef   => "${tls_dir}/private/${::fqdn}-cloudera_manager.key",
-    default => $::cloudera_server_key_file,
   }
 
   $parcel_dir = $::cloudera_parcel_dir ? {

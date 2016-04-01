@@ -44,14 +44,12 @@
 #
 # Free Usage
 #
-class puppet_cdh::java::repo (
-  $ensure         = $puppet_cdh::java::params::ensure,
-  $reposerver     = $puppet_cdh::java::params::java_reposerver,
-  $repopath       = $puppet_cdh::java::params::java_repopath,
-  $version        = $puppet_cdh::java::params::cm_version,
-#  $aptkey         = $puppet_cdh::java::params::cdh_aptkey,
-) inherits puppet_cdh::java::params {
-   case $ensure {
+class puppet_cdh::java::repo inherits puppet_cdh::java::params {
+  $reposerver = $puppet_cdh::java::params::java_reposerver
+  $repopath   = $puppet_cdh::java::params::java_repopath
+  $version    = $puppet_cdh::java::params::cm_version
+   
+  case $ensure {
     /(present)/: {
       $enabled = '1'
     }
@@ -71,8 +69,8 @@ class puppet_cdh::java::repo (
         gpgcheck       => 1,
         gpgkey         => "${reposerver}${repopath}RPM-GPG-KEY-cloudera",
         baseurl        => "${reposerver}${repopath}${version}/",
-        priority       => $puppet_cdh::java::params::yum_priority,
-        protect        => $puppet_cdh::java::params::yum_protect,
+        priority       => $yum_priority,
+        protect        => $yum_protect,
       }
 
       file { '/etc/yum.repos.d/cm_java.repo':

@@ -19,7 +19,6 @@ class puppet_cdh::cdh::hadoop::params {
 
   # $resourcemanager_hosts is not set here, because it defaults to the user
   # provided value of $namenode_hosts in hadoop.pp.
-  $zookeeper_hosts = undef
 
   $yarn_local_path = 'yarn/local'
   $yarn_logs_path = 'yarn/logs'

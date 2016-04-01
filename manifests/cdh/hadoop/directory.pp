@@ -49,7 +49,6 @@ define puppet_cdh::cdh5::hadoop::directory (
             command => "/usr/bin/hdfs dfs -rm -R ${path}",
             onlyif  => "test -f /usr/bin/hdfs && /usr/bin/hdfs dfs -test -e ${path}",
             user    => 'hdfs',
-            require => Service['hadoop-hdfs-namenode'],
         }
     }
 }

@@ -1,4 +1,4 @@
-# == Class: puppet_cdh::cdh
+# == Class: puppet_cdh:init
 #
 # This class handles installing the Cloudera Distribution, including Apache Hadoop.
 #
@@ -36,37 +36,34 @@
 #
 # Free Usage
 #
-class puppet_cdh::cdh::cdh (
-  $ensure         = $puppet_cdh::params::ensure,
-  $autoupgrade    = $puppet_cdh::params::safe_autoupgrade,
-  $service_ensure = $puppet_cdh::params::service_ensure) inherits puppet_cdh::params {
+class puppet_cdh::cdh::init inherits puppet_cdh::cdh::params {
   # Validate our booleans
   validate_bool($autoupgrade)
 
-  class { 'puppet_cdh::cdh::hadoop':
-    cluster_name               => 'mycluster',
-    namenode_hosts             => ['puppet-cdh'],
-    dfs_name_dir               => '/var/lib/hadoop/name',
-    datanode_mounts            => '/dfs/dn',
-    yarn_nodemanager_resource_memory_mb      => '6144',
-    yarn_nodemanager_resource_cpu_vcores     => '4',
-    yarn_scheduler_minimum_allocation_mb     => '512',
-    yarn_scheduler_maximum_allocation_mb     => '3072',
-    yarn_scheduler_minimum_allocation_vcores => '1',
-    yarn_scheduler_maximum_allocation_vcores => '4',
-    yarn_app_mapreduce_am_resource_mb        => '1024',
-    yarn_app_mapreduce_am_command_opts       => '-Djava.net.preferIPv4Stack=true -Xmx858993459',
-    mapreduce_map_java_opts    => '-Djava.net.preferIPv4Stack=true -Xmx429496730',
-    mapreduce_reduce_java_opts => '-Djava.net.preferIPv4Stack=true -Xmx858993459',
-    mapreduce_map_memory_mb    => '512',
-    mapreduce_reduce_memory_mb => '1024',
-  }
-
-  class { 'puppet_cdh::cdh5::hadoop::master':
-  }
-
-  class { 'puppet_cdh::cdh5::hadoop::worker':
-  }
+#  class { 'puppet_cdh::cdh::hadoop':
+#    cluster_name               => 'mycluster',
+#    namenode_hosts             => ['puppet-cdh'],
+#    dfs_name_dir               => '/var/lib/hadoop/name',
+#    datanode_mounts            => '/dfs/dn',
+#    yarn_nodemanager_resource_memory_mb      => '6144',
+#    yarn_nodemanager_resource_cpu_vcores     => '4',
+#    yarn_scheduler_minimum_allocation_mb     => '512',
+#    yarn_scheduler_maximum_allocation_mb     => '3072',
+#    yarn_scheduler_minimum_allocation_vcores => '1',
+#    yarn_scheduler_maximum_allocation_vcores => '4',
+#    yarn_app_mapreduce_am_resource_mb        => '1024',
+#    yarn_app_mapreduce_am_command_opts       => '-Djava.net.preferIPv4Stack=true -Xmx858993459',
+#    mapreduce_map_java_opts    => '-Djava.net.preferIPv4Stack=true -Xmx429496730',
+#    mapreduce_reduce_java_opts => '-Djava.net.preferIPv4Stack=true -Xmx858993459',
+#    mapreduce_map_memory_mb    => '512',
+#    mapreduce_reduce_memory_mb => '1024',
+#  }
+#
+#  class { 'puppet_cdh::cdh5::hadoop::master':
+#  }
+#
+#  class { 'puppet_cdh::cdh5::hadoop::worker':
+#  }
 
   #  class { 'puppet_cdh::cdh5::hue':
   #    ensure      => $ensure,
@@ -76,14 +73,14 @@ class puppet_cdh::cdh::cdh (
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-    class { 'puppet_cdh::cdh5::hbase::master':
+#    class { 'puppet_cdh::cdh5::hbase::master':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
-    }
-    class { 'puppet_cdh::cdh5::hbase::regionserver':
+#    }
+ #   class { 'puppet_cdh::cdh5::hbase::regionserver':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
-    }
+#    }
   #  class { 'puppet_cdh::cdh5::hive':
   #    metastore_host => 'puppet-cdh',
   #    zookeeper_hosts => 'puppet-cdh',  
@@ -99,9 +96,7 @@ class puppet_cdh::cdh::cdh (
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  class { 'puppet_cdh::cdh5::zookeeper':
-  #    ensure      => $ensure,
-  #    autoupgrade => $autoupgrade,
+  class { 'puppet_cdh::cdh::zookeeper::init':
   }
   #  class { 'puppet_cdh::cdh5::flume':
   #    ensure      => $ensure,

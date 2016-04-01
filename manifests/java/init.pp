@@ -1,4 +1,4 @@
-# == Class: puppet_cdh::java::java
+# == Class: puppet_cdh::java::init
 #
 # This class handles installing Oracle JDK as shipped by Cloudera.
 #
@@ -35,11 +35,7 @@
 #
 # Free Usage <br/>
 #
-class puppet_cdh::java::java (
-  $ensure       = $puppet_cdh::java::params::ensure,
-  $package_name = $puppet_cdh::java::params::java_package_name,
-  $autoupgrade  = $puppet_cdh::java::params::safe_autoupgrade
-) inherits puppet_cdh::java::params {
+class puppet_cdh::java::init inherits puppet_cdh::java::params {
   # Validate our booleans
   validate_bool($autoupgrade)
 

@@ -9,6 +9,5 @@
 # === Copyright:
 #
 # Free Usage <br/>
-class puppet_cdh::cdh::zookeeper::params {
-
+class puppet_cdh::cdh::zookeeper::params inherits puppet_cdh::params {
 }
