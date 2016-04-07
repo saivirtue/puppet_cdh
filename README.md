@@ -5,7 +5,7 @@ Cloudera's Distribution (CDH) for Apache Hadoop.
 
 This repository works with CDH5.  For CDH4, use the ```cdh4``` branch.
 
-NOTE: The main puppet-cdh repository is hosted in WMF Gerrit at
+NOTE: The main puppetmaster repository is hosted in WMF Gerrit at
 [operations/puppet/cdh](https://gerrit.wikimedia.org/r/#/admin/projects/operations/puppet/cdh).
 
 
@@ -33,12 +33,12 @@ that:
 
 Clone (or copy) this repository into your puppet modules/cdh directory:
 ```bash
-git clone git://github.com/wikimedia/puppet-cdh.git modules/cdh
+git clone git://github.com/wikimedia/puppetmaster.git modules/cdh
 ```
 
 Or you could also use a git submodule:
 ```bash
-git submodule add git://github.com/wikimedia/puppet-cdh.git modules/cdh
+git submodule add git://github.com/wikimedia/puppetmaster.git modules/cdh
 git commit -m 'Adding modules/cdh as a git submodule.'
 git submodule init && git submodule update
 ```

@@ -1,4 +1,4 @@
-# == Class puppet_cdh::cdh5::hadoop::master
+# == Class puppet_cdh::cdh::hadoop::master
 # Wrapper class for Hadoop master node services:
 # - NameNode
 # - ResourceManager and HistoryServer (YARN)
@@ -7,13 +7,13 @@
 # primary ResourceManager on the same host.  Standby services
 # can be spread on any nodes.
 #
-class puppet_cdh::cdh5::hadoop::master {
-  Class['puppet_cdh::cdh5::hadoop'] -> Class['puppet_cdh::cdh5::hadoop::master']
+class puppet_cdh::cdh::hadoop::master inherits puppet_cdh::cdh::hadoop::init {
+  
+  include puppet_cdh::cdh::hadoop::namenode
+  include puppet_cdh::cdh::hadoop::namenode::primary
 
-  include puppet_cdh::cdh5::hadoop::namenode::primary
-
-  include puppet_cdh::cdh5::hadoop::resourcemanager
-  include puppet_cdh::cdh5::hadoop::historyserver
+  include puppet_cdh::cdh::hadoop::resourcemanager
+  include puppet_cdh::cdh::hadoop::historyserver
 
   # Install a check_active_namenode script, this can be run
   # from any Hadoop client, but we will only run it from master nodes.

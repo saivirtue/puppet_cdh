@@ -23,39 +23,38 @@ class puppet_cdh inherits puppet_cdh::params {
   validate_bool($install_java)
   validate_bool($install_jce)
   
-  stage {'check':}
-  Stage['check'] -> Stage['main']
-
-  exec { 'set_vm_swappiness':
-    command  => 'sysctl -w vm.swappiness=0',
-    unless   => 'test 0 -eq `sysctl -n vm.swappiness`',
-    path     => '/sbin',
-    provider => 'shell',
-  } ->
-  exec { 'disable_transparent_hugepage_defrag':
-    command  => 'if [ -f /sys/kernel/mm/transparent_hugepage/defrag ]; then echo never > /sys/kernel/mm/transparent_hugepage/defrag; fi',
-    unless   => 'if [ -f /sys/kernel/mm/transparent_hugepage/defrag ]; then grep -q "\[never\]" /sys/kernel/mm/transparent_hugepage/defrag; fi',
-    path     => '/usr/bin:/usr/sbin:/bin:/sbin',
-    provider => 'shell',
-  } ->
-  exec { 'disable_redhat_transparent_hugepage_defrag':
-    command  => 'if [ -f /sys/kernel/mm/redhat_transparent_hugepage/defrag ]; then echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag; fi',
-    unless   => 'if [ -f /sys/kernel/mm/redhat_transparent_hugepage/defrag ]; then grep -q "\[never\]" /sys/kernel/mm/redhat_transparent_hugepage/defrag; fi',
-    path     => '/usr/bin:/usr/sbin:/bin:/sbin',
-    provider => 'shell',
-  } ->
-  # Configuring Dependencies Before Install Cluster
-  package { 'ntp': ensure => 'present', }
-  service { 'ntpd':
-    ensure    => 'running',
-    enable    => true,
-    hasstatus => true,
-    require   => Package['ntp'],
-  } ->
-  exec { 'ntp_sync':
-    command => 'ntpdate -u pool.ntp.org',
-    path    => '/usr/sbin',
-    require => Service['ntpd'],
+  if $enabled {
+	  exec { 'set_vm_swappiness':
+	    command  => 'sysctl -w vm.swappiness=0',
+	    unless   => 'test 0 -eq `sysctl -n vm.swappiness`',
+	    path     => '/sbin',
+	    provider => 'shell',
+	  } ->
+	  exec { 'disable_transparent_hugepage_defrag':
+	    command  => 'if [ -f /sys/kernel/mm/transparent_hugepage/defrag ]; then echo never > /sys/kernel/mm/transparent_hugepage/defrag; fi',
+	    unless   => 'if [ -f /sys/kernel/mm/transparent_hugepage/defrag ]; then grep -q "\[never\]" /sys/kernel/mm/transparent_hugepage/defrag; fi',
+	    path     => '/usr/bin:/usr/sbin:/bin:/sbin',
+	    provider => 'shell',
+	  } ->
+	  exec { 'disable_redhat_transparent_hugepage_defrag':
+	    command  => 'if [ -f /sys/kernel/mm/redhat_transparent_hugepage/defrag ]; then echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag; fi',
+	    unless   => 'if [ -f /sys/kernel/mm/redhat_transparent_hugepage/defrag ]; then grep -q "\[never\]" /sys/kernel/mm/redhat_transparent_hugepage/defrag; fi',
+	    path     => '/usr/bin:/usr/sbin:/bin:/sbin',
+	    provider => 'shell',
+	  } ->
+	  # Configuring Dependencies Before Install Cluster
+	  package { 'ntp': ensure => 'present', }
+	  service { 'ntpd':
+	    ensure    => 'running',
+	    enable    => true,
+	    hasstatus => true,
+	    require   => Package['ntp'],
+	  } ->
+	  exec { 'ntp_sync':
+	    command => 'ntpdate -u pool.ntp.org',
+	    path    => '/usr/sbin',
+	    require => Service['ntpd'],
+	  }
   }
 
   # TODO : hostname check ?

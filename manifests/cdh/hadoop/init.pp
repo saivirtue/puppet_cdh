@@ -1,5 +1,5 @@
 #
-# == Class cdh::hadoop
+# == Class puppet_cdh::cdh::hadoop::init
 #
 # Installs the main Hadoop/HDFS packages and config files.  This
 # By default this will set Hadoop config files to run YARN (MapReduce 2).
@@ -116,61 +116,10 @@
 #   $yarn_site_extra_properties               - Hash of extra property names to values that will be
 #                                               be rendered in yarn-site.xml.erb.  Default: undef
 #
-class puppet_cdh::cdh5::hadoop (
-  $namenode_hosts,
-  $dfs_name_dir,
-  $cluster_name                   = $puppet_cdh::cdh5::hadoop::defaults::cluster_name,
-  $journalnode_hosts              = $puppet_cdh::cdh5::hadoop::defaults::journalnode_hosts,
-  $dfs_journalnode_edits_dir      = $puppet_cdh::cdh5::hadoop::defaults::dfs_journalnode_edits_dir,
-  $datanode_mounts                = $puppet_cdh::cdh5::hadoop::defaults::datanode_mounts,
-  $dfs_data_path                  = $puppet_cdh::cdh5::hadoop::defaults::dfs_data_path,
-  $resourcemanager_hosts          = $namenode_hosts,
-  $zookeeper_hosts                = $puppet_cdh::cdh5::hadoop::defaults::zookeeper_hosts,
-  $yarn_local_path                = $puppet_cdh::cdh5::hadoop::defaults::yarn_local_path,
-  $yarn_logs_path                 = $puppet_cdh::cdh5::hadoop::defaults::yarn_logs_path,
-  $dfs_block_size                 = $puppet_cdh::cdh5::hadoop::defaults::dfs_block_size,
-  $enable_jmxremote               = $puppet_cdh::cdh5::hadoop::defaults::enable_jmxremote,
-  $webhdfs_enabled                = $puppet_cdh::cdh5::hadoop::defaults::webhdfs_enabled,
-  $httpfs_enabled                 = $puppet_cdh::cdh5::hadoop::defaults::httpfs_enabled,
-  $io_file_buffer_size            = $puppet_cdh::cdh5::hadoop::defaults::io_file_buffer_size,
-  $mapreduce_system_dir           = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_system_dir,
-  $mapreduce_map_tasks_maximum    = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_map_tasks_maximum,
-  $mapreduce_reduce_tasks_maximum = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_reduce_tasks_maximum,
-  $mapreduce_job_reuse_jvm_num_tasks           = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_job_reuse_jvm_num_tasks,
-  $mapreduce_reduce_shuffle_parallelcopies     = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_reduce_shuffle_parallelcopies,
-  $mapreduce_map_memory_mb        = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_map_memory_mb,
-  $mapreduce_reduce_memory_mb     = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_reduce_memory_mb,
-  $yarn_app_mapreduce_am_resource_mb           = $puppet_cdh::cdh5::hadoop::defaults::yarn_app_mapreduce_am_resource_mb,
-  $yarn_app_mapreduce_am_command_opts          = $puppet_cdh::cdh5::hadoop::defaults::yarn_app_mapreduce_am_command_opts,
-  $yarn_app_mapreduce_am_job_client_port_range = $puppet_cdh::cdh5::hadoop::defaults::yarn_app_mapreduce_am_job_client_port_range,
-  $mapreduce_task_io_sort_mb      = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_task_io_sort_mb,
-  $mapreduce_task_io_sort_factor  = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_task_io_sort_factor,
-  $mapreduce_map_java_opts        = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_map_java_opts,
-  $mapreduce_reduce_java_opts     = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_reduce_java_opts,
-  $mapreduce_shuffle_port         = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_shuffle_port,
-  $mapreduce_intermediate_compression          = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_intermediate_compression,
-  $mapreduce_intermediate_compression_codec    = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_intermediate_compression_codec,
-  $mapreduce_output_compression   = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_output_compession,
-  $mapreduce_output_compression_codec          = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_output_compession_codec,
-  $mapreduce_output_compression_type           = $puppet_cdh::cdh5::hadoop::defaults::mapreduce_output_compression_type,
-  $yarn_nodemanager_resource_memory_mb         = $puppet_cdh::cdh5::hadoop::defaults::yarn_nodemanager_resource_memory_mb,
-  $yarn_nodemanager_resource_cpu_vcores        = $puppet_cdh::cdh5::hadoop::defaults::yarn_nodemanager_resource_cpu_vcores,
-  $yarn_scheduler_minimum_allocation_mb        = $puppet_cdh::cdh5::hadoop::defaults::yarn_scheduler_minimum_allocation_mb,
-  $yarn_scheduler_maximum_allocation_mb        = $puppet_cdh::cdh5::hadoop::defaults::yarn_scheduler_maximum_allocation_mb,
-  $yarn_scheduler_minimum_allocation_vcores    = $puppet_cdh::cdh5::hadoop::defaults::yarn_scheduler_minimum_allocation_vcores,
-  $yarn_scheduler_maximum_allocation_vcores    = $puppet_cdh::cdh5::hadoop::defaults::yarn_scheduler_maximum_allocation_vcores,
-  $hadoop_heapsize                = $puppet_cdh::cdh5::hadoop::defaults::hadoop_heapsize,
-  $hadoop_namenode_opts           = $puppet_cdh::cdh5::hadoop::defaults::hadoop_namenode_opts,
-  $yarn_heapsize                  = $puppet_cdh::cdh5::hadoop::defaults::yarn_heapsize,
-  $dfs_datanode_hdfs_blocks_metadata_enabled   = $puppet_cdh::cdh5::hadoop::defaults::dfs_datanode_hdfs_blocks_metadata_enabled,
-  $ganglia_hosts                  = $puppet_cdh::cdh5::hadoop::defaults::ganglia_hosts,
-  $net_topology_script_template   = $puppet_cdh::cdh5::hadoop::defaults::net_topology_script_template,
-  $gelf_logging_enabled           = $puppet_cdh::cdh5::hadoop::defaults::gelf_logging_enabled,
-  $gelf_logging_host              = $puppet_cdh::cdh5::hadoop::defaults::gelf_logging_host,
-  $gelf_logging_port              = $puppet_cdh::cdh5::hadoop::defaults::gelf_logging_port,
-  $fair_scheduler_template        = $puppet_cdh::cdh5::hadoop::defaults::fair_scheduler_template,
-  $yarn_site_extra_properties     = $puppet_cdh::cdh5::hadoop::defaults::yarn_site_extra_properties,) inherits 
-puppet_cdh::cdh5::hadoop::defaults {
+class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
+  
+  Class['puppet_cdh::cdh::repo'] -> Class['puppet_cdh::cdh::hadoop::init']
+  
   # If $dfs_name_dir is a list, this will be the
   # first entry in the list.  Else just $dfs_name_dir.
   # This used in a couple of execs throughout this module.
@@ -206,19 +155,29 @@ puppet_cdh::cdh5::hadoop::defaults {
   # is intended to be used for this cluster.  HA YARN
   # require the zookeeper is configured, and that
   # multiple ResourceManagers are specificed.
-  if $ha_enabled and size($resourcemanager_hosts) > 1 and $zookeeper_hosts {
-    $yarn_ha_enabled = true
-    $yarn_cluster_id = $cluster_name
-  } else {
-    $yarn_ha_enabled = false
-    $yarn_cluster_id = undef
-  }
+#  if $ha_enabled and size($resourcemanager_hosts) > 1 and $zookeeper_hosts {
+#    $yarn_ha_enabled = true
+#    $yarn_cluster_id = $cluster_name
+#  } else {
+#    $yarn_ha_enabled = false
+#    $yarn_cluster_id = undef
+#  }
 
   # Assume the primary resourcemanager is the first entry in $resourcemanager_hosts
   # Set a variable here for reference in other classes.
   $primary_resourcemanager_host = $resourcemanager_hosts[0]
+  
+    
+  if $enabled {
+    Package['hadoop-client'] -> File['/etc/hadoop',$config_directory] -> Puppet_cdh::Cdh::Alternative['hadoop-conf']
+  } else {
+    File['/etc/hadoop',$config_directory] -> Puppet_cdh::Cdh::Alternative['hadoop-conf'] -> Package['hadoop-client']
+  }
 
-  package { 'hadoop-client': ensure => 'installed' }
+  package { 'hadoop-client':
+    ensure   => $package_ensure,
+    provider => 'yum',
+  }
 
   # Some Hadoop jobs need Zookeeper libraries, but for some reason they
   # are not installed via package dependencies.  Install the CDH
@@ -231,93 +190,101 @@ puppet_cdh::cdh5::hadoop::defaults {
 
   # Create the $cluster_name based $config_directory.
   file { $config_directory:
-    ensure  => 'directory',
-    require => Package['hadoop-client'],
+    ensure  => $dir_enabled,
+    force   => true,
+  }
+  
+  file { '/etc/hadoop':
+    ensure  => $dir_enabled,
+    force   => true,
+  }  
+
+  puppet_cdh::cdh::alternative { 'hadoop-conf':
+    link    => '/etc/hadoop/conf',
+    path    => $config_directory,
+    enabled => $enabled,
   }
 
-  puppet_cdh::cdh5::alternative { 'hadoop-conf':
-    link => '/etc/hadoop/conf',
-    path => $config_directory,
-  }
 
-  # Render net-topology.sh from $net_topology_script_template
-  # if it was given.
-  $net_topology_script_ensure = $net_topology_script_template ? {
-    undef   => 'absent',
-    default => 'present',
-  }
-  $net_topology_script_path = "${config_directory}/net-topology.sh"
-
-  file { $net_topology_script_path:
-    ensure => $net_topology_script_ensure,
-    mode   => '0755',
-  }
-
-  # Conditionally overriding content attribute since
-  # $net_topology_script_template is default undef.
-  if ($net_topology_script_ensure == 'present') {
-    File[$net_topology_script_path] {
-      content => template($net_topology_script_template), }
-  }
-
-  $fair_scheduler_enabled = $fair_scheduler_template ? {
-    undef   => false,
-    false   => false,
-    default => true,
-  }
-
-  $fair_scheduler_allocation_file_ensure = $fair_scheduler_enabled ? {
-    true  => 'present',
-    false => 'absent',
-  }
-
-  # FairScheduler can be enabled
-  # and this file will be used to configure
-  # FairScheduler queues.
-  file { "${config_directory}/fair-scheduler.xml":
-    ensure  => $fair_scheduler_allocation_file_ensure,
-    content => template($fair_scheduler_template),
-  }
-
-  file { "${config_directory}/log4j.properties": content => template('puppet_cdh/hadoop/log4j.properties.erb'), }
-
-  file { "${config_directory}/core-site.xml": content => template('puppet_cdh/hadoop/core-site.xml.erb'), }
-
-  file { "${config_directory}/hdfs-site.xml": content => template('puppet_cdh/hadoop/hdfs-site.xml.erb'), }
-
-  file { "${config_directory}/hadoop-env.sh": content => template('puppet_cdh/hadoop/hadoop-env.sh.erb'), }
-
-  file { "${config_directory}/mapred-site.xml": content => template('puppet_cdh/hadoop/mapred-site.xml.erb'), }
-
-  file { "${config_directory}/yarn-site.xml": content => template('puppet_cdh/hadoop/yarn-site.xml.erb'), }
-
-  file { "${config_directory}/yarn-env.sh": content => template('puppet_cdh/hadoop/yarn-env.sh.erb'), }
-
-  file { "${config_directory}/container-executor.cfg": content => template('puppet_cdh/hadoop/container-executor.cfg.erb'), }
-
-#TODO : move the ulimits to proper place
-#  $service_name = 'hdfs'
-#  file { "/etc/security/limits.d/hdfs.conf": content => template('puppet_cdh/os/ulimits.conf.erb'), }
-#  $service_name = 'yarn'
-#  file { "/etc/security/limits.d/yarn.conf": content => template('puppet_cdh/os/ulimits.conf.erb'), }
-
-  # Render hadoop-metrics2.properties
-  # if we have Ganglia Hosts to send metrics to.
-  $hadoop_metrics2_ensure = $ganglia_hosts ? {
-    undef   => 'absent',
-    default => 'present',
-  }
-
-  file { "${config_directory}/hadoop-metrics2.properties":
-    ensure  => $hadoop_metrics2_ensure,
-    content => template('puppet_cdh/hadoop/hadoop-metrics2.properties.erb'),
-  }
+  if $enabled {
+	  # Render net-topology.sh from $net_topology_script_template
+	  # if it was given.
+	  $net_topology_script_ensure = $net_topology_script_template ? {
+	    undef   => 'absent',
+	    default => 'present',
+	  }
+	  $net_topology_script_path = "${config_directory}/net-topology.sh"
+	
+	  file { $net_topology_script_path:
+	    ensure => $net_topology_script_ensure,
+	    mode   => '0755',
+	  }
+	
+	  # Conditionally overriding content attribute since
+	  # $net_topology_script_template is default undef.
+	  if ($net_topology_script_ensure == 'present') {
+	    File[$net_topology_script_path] {
+	      content => template($net_topology_script_template), }
+	  }
+	
+	  $fair_scheduler_enabled = $fair_scheduler_template ? {
+	    undef   => false,
+	    false   => false,
+	    default => true,
+	  }
+	
+	  $fair_scheduler_allocation_file_ensure = $fair_scheduler_enabled ? {
+	    true    => 'present',
+	    false   => 'absent',
+	    default => 'absent',
+	  }
+	
+	  # FairScheduler can be enabled
+	  # and this file will be used to configure
+	  # FairScheduler queues.
+	  file { "${config_directory}/fair-scheduler.xml":
+	    ensure  => $fair_scheduler_allocation_file_ensure,
+	    content => template($fair_scheduler_template),
+	  }
+	
+	  file { "${config_directory}/log4j.properties": content => template('puppet_cdh/hadoop/log4j.properties.erb'), }
+	
+	  file { "${config_directory}/core-site.xml": content => template('puppet_cdh/hadoop/core-site.xml.erb'), }
+	
+	  file { "${config_directory}/hdfs-site.xml": content => template('puppet_cdh/hadoop/hdfs-site.xml.erb'), }
+	
+	  file { "${config_directory}/hadoop-env.sh": content => template('puppet_cdh/hadoop/hadoop-env.sh.erb'), }
+	
+	  file { "${config_directory}/mapred-site.xml": content => template('puppet_cdh/hadoop/mapred-site.xml.erb'), }
+	
+	  file { "${config_directory}/yarn-site.xml": content => template('puppet_cdh/hadoop/yarn-site.xml.erb'), }
+	
+	  file { "${config_directory}/yarn-env.sh": content => template('puppet_cdh/hadoop/yarn-env.sh.erb'), }
+	
+	  file { "${config_directory}/container-executor.cfg": content => template('puppet_cdh/hadoop/container-executor.cfg.erb'), }
+	
+	  # Render hadoop-metrics2.properties
+	  # if we have Ganglia Hosts to send metrics to.
+	  $hadoop_metrics2_ensure = $ganglia_hosts ? {
+	    undef   => 'absent',
+	    default => 'present',
+	  }
+	
+	  file { "${config_directory}/hadoop-metrics2.properties":
+	    ensure  => $hadoop_metrics2_ensure,
+	    content => template('puppet_cdh/hadoop/hadoop-metrics2.properties.erb'),
+	  }
+	}
+	
+	$service_name = 'hdfs'
+  file { "/etc/security/limits.d/hdfs.conf": content => template('puppet_cdh/os/ulimits.conf.erb'), }
 
   # If the current node is meant to be JournalNode,
   # include the journalnode class.  JournalNodes can
   # be started at any time.
-  if ($journalnode_hosts and (($::fqdn and $::fqdn in $journalnode_hosts) or ($::ipaddress and $::ipaddress in $journalnode_hosts) 
-  or ($::ipaddress_eth1 and $::ipaddress_eth1 in $journalnode_hosts))) {
-    include puppet_cdh::cdh5::hadoop::journalnode
+  if ($journalnode_hosts and (($::fqdn and $::fqdn in $journalnode_hosts)
+    or ($::ipaddress and $::ipaddress in $journalnode_hosts) 
+    or ($::ipaddress_eth1 and $::ipaddress_eth1 in $journalnode_hosts))) {
+    include puppet_cdh::cdh::hadoop::journalnode
   }
 }

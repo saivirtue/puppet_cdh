@@ -1,7 +1,7 @@
 # == Class cdh::hadoop::journalnode
 #
-class cdh::hadoop::journalnode {
-    Class['cdh::hadoop'] -> Class['cdh::hadoop::journalnode']
+class puppet_cdh::cdh::hadoop::journalnode inherits puppet_cdh::cdh::hadoop::namenode::standby {
+    Class['puppet_cdh::cdh::hadoop::init'] -> Class['puppet_cdh::cdh::hadoop::journalnode']
 
     # install jobtracker daemon package
     package { 'hadoop-hdfs-journalnode':
@@ -9,7 +9,7 @@ class cdh::hadoop::journalnode {
     }
 
     # Ensure that the journanode edits directory has the correct permissions.
-    file { $::cdh::hadoop::dfs_journalnode_edits_dir:
+    file { $dfs_journalnode_edits_dir:
         ensure  => 'directory',
         owner   => 'hdfs',
         group   => 'hdfs',
@@ -24,6 +24,6 @@ class cdh::hadoop::journalnode {
         hasstatus  => true,
         hasrestart => true,
         alias      => 'journalnode',
-        require    => File[$::cdh::hadoop::dfs_journalnode_edits_dir],
+        require    => File[$dfs_journalnode_edits_dir],
     }
 }

@@ -244,9 +244,33 @@ class puppet_cdh::params ( #parameters usage
   $db_pass = undef,
   $db_type = undef,
   $parcel_dir = undef,
+  #hadoop jart#
+  $cluster_name = undef,
+  $namenode_hosts = undef,
+  $dfs_name_dir = undef,
+  $datanode_mounts = undef,
+  $resourcemanager_hosts = undef,
+  $yarn_nodemanager_resource_memory_mb = undef,
+  $yarn_nodemanager_resource_cpu_vcores = undef,
+  $yarn_scheduler_minimum_allocation_mb = undef,
+  $yarn_scheduler_maximum_allocation_mb = undef,
+  $yarn_scheduler_minimum_allocation_vcores = undef,
+  $yarn_scheduler_maximum_allocation_vcores = undef,
+  $yarn_app_mapreduce_am_resource_mb = undef,
+  $yarn_app_mapreduce_am_command_opts = undef,
+  $mapreduce_map_java_opts = undef,
+  $mapreduce_reduce_java_opts = undef,
+  $mapreduce_map_memory_mb = undef,
+  $mapreduce_reduce_memory_mb = undef,
   #zookeeper part#
   $zookeeper_hosts_hash,
 ) {
+  
+  case $ensure {
+    /(present)/ : { $enabled = true $package_ensure='present' $dir_enabled = 'directory' }
+    /(absent)/  : { $enabled = false $package_ensure='purged' $dir_enabled = 'absent' }
+    default     : { fail('ensure parameter must be present or absent') }
+  }
   
   if is_string($service_enable) {
     $safe_service_enable = str2bool($service_enable)

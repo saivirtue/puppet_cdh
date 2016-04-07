@@ -14,17 +14,21 @@
 #       path    => $config_directory,
 #   }
 #
-define puppet_cdh::cdh5::alternative(
-    $link,
-    $path,
-    $priority = 50
-)
-{
-    # Update $title alternatives to point $link at $path
-    exec { "update-alternatives_${title}":
-        command => "update-alternatives --install ${link} ${name} ${path} ${priority} && update-alternatives --set ${name} ${path}",
-        unless  => "update-alternatives --query ${name} | grep -q 'Value: ${path}'",
-        path    => '/bin:/usr/bin:/usr/sbin',
-        require => File[$path],
+define puppet_cdh::cdh::alternative ($link, $path, $priority = 50, $enabled) {
+  # Update $title alternatives to point $link at $path
+  if $enabled {
+    exec { "install-alternatives_${title}":
+      command => "update-alternatives --install ${link} ${name} ${path} ${priority} && update-alternatives --set ${name} ${path}",
+      unless  => "update-alternatives --display ${name} | grep -q 'Value: ${path}'",
+      path    => '/bin:/usr/bin:/usr/sbin',
+      require => File[$path],
     }
+    # Remove $title alternatives at $path
+  } else {
+    exec { "remove-alternatives_${title}":
+      command => "update-alternatives --remove ${name} ${path}",
+      onlyif  => "update-alternatives --display ${name} | grep -q 'Value: ${path}'",
+      path    => '/bin:/usr/bin:/usr/sbin',
+    }
+  }
 }

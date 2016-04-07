@@ -9,16 +9,16 @@
 # === Copyright:
 #
 # Free Usage <br/>
-class puppet_cdh::cdh::hadoop::params {
-  $cluster_name = 'cdh'
+class puppet_cdh::cdh::hadoop::params inherits puppet_cdh::params {
   $journalnode_hosts = undef
   $dfs_journalnode_edits_dir = undef
 
-  $datanode_mounts = undef
   $dfs_data_path = 'hdfs/dn'
 
-  # $resourcemanager_hosts is not set here, because it defaults to the user
-  # provided value of $namenode_hosts in hadoop.pp.
+  # $resourcemanager_hosts is default equal to $namenode_hosts
+  $resourcemanager_hosts = $namenode_hosts
+  
+  $yarn_ha_enabled = undef
 
   $yarn_local_path = 'yarn/local'
   $yarn_logs_path = 'yarn/logs'
@@ -29,20 +29,20 @@ class puppet_cdh::cdh::hadoop::params {
   $mapreduce_system_dir = undef
   $io_file_buffer_size = undef
 
-  $mapreduce_map_tasks_maximum = undef
-  $mapreduce_reduce_tasks_maximum = undef
-  $mapreduce_job_reuse_jvm_num_tasks = undef
-  $mapreduce_reduce_shuffle_parallelcopies = undef
+#  $mapreduce_map_tasks_maximum = undef
+#  $mapreduce_reduce_tasks_maximum = undef
+#  $mapreduce_job_reuse_jvm_num_tasks = undef
+#  $mapreduce_reduce_shuffle_parallelcopies = undef
 
-  $mapreduce_map_memory_mb = undef
-  $mapreduce_reduce_memory_mb = undef
-  $mapreduce_task_io_sort_mb = undef
-  $mapreduce_task_io_sort_factor = undef
-  $mapreduce_map_java_opts = undef
-  $mapreduce_reduce_java_opts = undef
-  $yarn_app_mapreduce_am_resource_mb = undef
-  $yarn_app_mapreduce_am_command_opts = undef
-  $yarn_app_mapreduce_am_job_client_port_range = undef
+#  $mapreduce_map_memory_mb = undef
+#  $mapreduce_reduce_memory_mb = undef
+#  $mapreduce_task_io_sort_mb = undef
+#  $mapreduce_task_io_sort_factor = undef
+#  $mapreduce_map_java_opts = undef
+#  $mapreduce_reduce_java_opts = undef
+#  $yarn_app_mapreduce_am_resource_mb = undef
+#  $yarn_app_mapreduce_am_command_opts = undef
+#  $yarn_app_mapreduce_am_job_client_port_range = undef
 
   $mapreduce_shuffle_port = undef
   $mapreduce_intermediate_compression = false
@@ -51,15 +51,15 @@ class puppet_cdh::cdh::hadoop::params {
   $mapreduce_output_compression_codec = 'org.apache.hadoop.io.compress.DefaultCodec'
   $mapreduce_output_compression_type = 'RECORD'
 
-  $yarn_nodemanager_resource_memory_mb = undef
+#  $yarn_nodemanager_resource_memory_mb = undef
   # Note:  Apparently puppet interprets a literal 1 as a String when it is on
   # its own.  Adding 0 to it converts it to a Fixnum, which will avoid a
   # 'comparison of String with X faild 'puppet failure.
-  $yarn_nodemanager_resource_cpu_vcores = max($::processorcount - 1, 1 + 0)
-  $yarn_scheduler_minimum_allocation_mb = undef
-  $yarn_scheduler_maximum_allocation_mb = undef
-  $yarn_scheduler_minimum_allocation_vcores = undef
-  $yarn_scheduler_maximum_allocation_vcores = undef
+#  $yarn_nodemanager_resource_cpu_vcores = max($::processorcount - 1, 1 + 0)
+#  $yarn_scheduler_minimum_allocation_mb = undef
+#  $yarn_scheduler_maximum_allocation_mb = undef
+#  $yarn_scheduler_minimum_allocation_vcores = undef
+#  $yarn_scheduler_maximum_allocation_vcores = undef
 
   $fair_scheduler_template = 'puppet_cdh/hadoop/fair-scheduler.xml.erb'
   $yarn_site_extra_properties = undef

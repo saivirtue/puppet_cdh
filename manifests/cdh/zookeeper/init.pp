@@ -10,6 +10,9 @@
 #
 # Free Usage <br/>
 class puppet_cdh::cdh::zookeeper::init inherits puppet_cdh::cdh::zookeeper::params {
+  
+  Class['puppet_cdh::cdh::repo'] -> Class['puppet_cdh::cdh::zookeeper::init']
+  
   define loopZooConf () {
     $hostname_map = split("$name", "[|]")
     $hostname = $hostname_map[0]
@@ -49,7 +52,7 @@ class puppet_cdh::cdh::zookeeper::init inherits puppet_cdh::cdh::zookeeper::para
     exec { 'zookeeper_server_init':
       command => "/sbin/service zookeeper-server init --myid $zid",
       path    => '/usr/bin:/sbin',
-      require => [Package['zookeeper'], Package['zookeeper-server'],],
+      require => [Package['zookeeper'], Package['zookeeper-server'], LoopZooConf[$zookeeper_hosts_array]],
       onlyif  => 'test `find /var/lib/zookeeper -maxdepth 0 -empty`',
     }
 

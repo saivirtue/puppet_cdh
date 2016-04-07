@@ -1,4 +1,4 @@
-# == Define puppet_cdh::cdh5::hadoop::worker::paths
+# == Define puppet_cdh::cdh::hadoop::worker::paths
 #
 # Ensures directories needed for Hadoop Worker nodes
 # are created with proper ownership and permissions.
@@ -15,7 +15,7 @@
 # $basedir   - base path for directory creation.  Default: $title
 #
 # == Usage:
-# puppet_cdh::cdh5::hadoop::worker::paths { ['/mnt/hadoop/data/a', '/mnt/hadoop/data/b']: }
+# puppet_cdh::cdh::hadoop::worker::paths { ['/mnt/hadoop/data/a', '/mnt/hadoop/data/b']: }
 #
 # The above declaration will ensure that the following directory hierarchy exists:
 #       /mnt/hadoop/data/a
@@ -33,47 +33,66 @@
 #
 # (If you use MRv1 instead of yarn, the hierarchy will be slightly different.)
 #
-define puppet_cdh::cdh5::hadoop::worker::paths ($basedir = $title) {
-  Class['puppet_cdh::cdh5::hadoop'] -> Puppet_cdh::Cdh5::Hadoop::Worker::Paths[$title]
+define puppet_cdh::cdh::hadoop::worker::paths (
+  $basedir = $title,
+  $ensure, # true or false
+  $dfs_data_path,
+  $yarn_local_path,
+  $yarn_logs_path
+) {
+  
+  if $ensure {
+    Exec["create_$basedir"] -> File[$basedir]
+  }
+
+  case $ensure {
+    true    : { $dir_enabled = 'directory' }
+    false   : { $dir_enabled = 'absent' }
+    default : { fail('ensure parameter must be true or false') }
+  }
 
   # hdfs, hadoop, and yarn users
   # are all added by packages
-  # installed by puppet_cdh::cdh5::hadoop
+  # installed by puppet_cdh::cdh::hadoop::init
 
   # make sure mounts exist
   file { $basedir:
-    ensure  => 'directory',
+    ensure  => $dir_enabled,
+    force   => true,
     owner   => 'hdfs',
     group   => 'hdfs',
     mode    => '0755',
-    require => Exec["create_$basedir"],
   }
 
-  exec { "create_$basedir":
-    command  => "mkdir -p $basedir",
-    path     => '/bin',
-    provider => 'shell',
-    unless   => "test -d $basedir",
-  }
-
-  # Assume that $dfs_data_path is two levels.  e.g. hdfs/dn
-  # We need to manage the parent directory too.
-  $dfs_data_path_parent = inline_template("<%= File.dirname('${::puppet_cdh::cdh5::hadoop::dfs_data_path}') %>")
-
-  # create DataNode directories
-  file { ["${basedir}/${dfs_data_path_parent}", "${basedir}/${::puppet_cdh::cdh5::hadoop::dfs_data_path}"]:
-    ensure  => 'directory',
-    owner   => 'hdfs',
-    group   => 'hdfs',
-    mode    => '0700',
-    require => File[$basedir],
-  }
-
-  # create yarn local directories
-  file { ["${basedir}/yarn", "${basedir}/yarn/local", "${basedir}/yarn/logs"]:
-    ensure => 'directory',
-    owner  => 'yarn',
-    group  => 'yarn',
-    mode   => '0755',
+  if $ensure {
+	  exec { "create_$basedir":
+	    command  => "mkdir -p $basedir",
+	    path     => '/bin',
+	    provider => 'shell',
+	    unless   => "test -d $basedir",
+	  }
+	
+	  # Assume that $dfs_data_path is two levels.  e.g. hdfs/dn
+	  # We need to manage the parent directory too.
+	  # $dfs_data_path_parent could be an array.
+	  $dfs_data_path_parent = inline_template("<%= File.dirname('${dfs_data_path}') %>")
+	
+	  # create DataNode directories
+	  file { ["${basedir}/${dfs_data_path_parent}", "${basedir}/${dfs_data_path}"]:
+	    ensure  => 'directory',
+	    owner   => 'hdfs',
+	    group   => 'hdfs',
+	    mode    => '0700',
+	    require => File[$basedir],
+	  }
+	
+	  # create yarn local and log directories
+	  file { ["${basedir}/yarn", "${basedir}/${yarn_local_path}", "${basedir}/${yarn_logs_path}"]:
+	    ensure => 'directory',
+	    owner  => 'yarn',
+	    group  => 'yarn',
+	    mode   => '0755',
+	    require => File[$basedir],
+	  }
   }
 }

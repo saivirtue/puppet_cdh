@@ -1,56 +1,63 @@
-# == Class puppet_cdh::cdh5::hadoop::namenode
+# == Class puppet_cdh::cdh::hadoop::namenode
 # Installs and configureds Hadoop NameNode.
 # This will format the NameNode if it is not
 # already formatted.  It will also create
 # a common HDFS directory hierarchy.
 #
 # Note:  If you are using HA NameNode (indicated by setting
-# puppet_cdh::cdh5::hadoop::nameservice_id), your JournalNodes should be running before
+# puppet_cdh::cdh::hadoop::init::nameservice_id), your JournalNodes should be running before
 # this class is applied.
 #
-class puppet_cdh::cdh5::hadoop::namenode {
-    Class['puppet_cdh::cdh5::hadoop'] -> Class['puppet_cdh::cdh5::hadoop::namenode']
+class puppet_cdh::cdh::hadoop::namenode inherits puppet_cdh::cdh::hadoop::master {
 
+    if $enabled {
+      Package['hadoop-hdfs-namenode'] -> Exec['touch hosts.exclude'] -> File[$dfs_name_dir] -> Exec['hadoop-namenode-format'] -> Service['hadoop-hdfs-namenode']
+    } else {
+      Service['hadoop-hdfs-namenode'] -> Exec['hadoop-namenode-format'] -> File[$dfs_name_dir] -> Package['hadoop-hdfs-namenode']
+    }
+    
     # install namenode daemon package
     package { 'hadoop-hdfs-namenode':
-        ensure => 'installed',
+        ensure => $ensure,
     }
 
-    # NameNodes expect that the hosts.exclude file exists.
-    # I don't want to manage this as a puppet file resource,
-    # as users of this class might want to manage it themselves.
-    # Instead, this exec just touches the file if it doesn't exist.
-    exec { 'touch hosts.exclude':
-        command => "/bin/touch ${::puppet_cdh::cdh5::hadoop::config_directory}/hosts.exclude",
-        unless  => "/usr/bin/test -f ${::puppet_cdh::cdh5::hadoop::config_directory}/hosts.exclude",
-        require => Package['hadoop-hdfs-namenode'],
+    if $enabled {
+	    # NameNodes expect that the hosts.exclude file exists.
+	    # I don't want to manage this as a puppet file resource,
+	    # as users of this class might want to manage it themselves.
+	    # Instead, this exec just touches the file if it doesn't exist.
+	    exec { 'touch hosts.exclude':
+	        command => "/bin/touch ${config_directory}/hosts.exclude",
+	        unless  => "/usr/bin/test -f ${config_directory}/hosts.exclude",
+	    }
     }
 
     # Ensure that the namenode directory has the correct permissions.
-    file { $::puppet_cdh::cdh5::hadoop::dfs_name_dir:
-        ensure  => 'directory',
+    file { $dfs_name_dir:
+        ensure  => $dir_enabled,
+        force   => true,
         owner   => 'hdfs',
         group   => 'hdfs',
         mode    => '0700',
-        require => Package['hadoop-hdfs-namenode'],
     }
 
     # If $dfs_name_dir/current/VERSION doesn't exist, assume
     # NameNode has not been formated.  Format it before
     # the namenode service is started.
+    # namenode-format only execute if the ${dfs_name_dir_main} exists (not uninstall case).
     exec { 'hadoop-namenode-format':
         command => '/usr/bin/hdfs namenode -format -nonInteractive',
-        creates => "${::puppet_cdh::cdh5::hadoop::dfs_name_dir_main}/current/VERSION",
+        creates => "${dfs_name_dir_main}/current/VERSION",
+        onlyif  => "test -d ${dfs_name_dir_main}",
+        path    => '/usr/bin',
         user    => 'hdfs',
-        require => [File[$::puppet_cdh::cdh5::hadoop::dfs_name_dir], Exec['touch hosts.exclude']],
     }
 
     service { 'hadoop-hdfs-namenode':
-        ensure     => 'running',
-        enable     => true,
+        ensure     => $enabled,
+        enable     => $enabled,
         hasstatus  => true,
         hasrestart => true,
         alias      => 'namenode',
-        require    => Exec['hadoop-namenode-format'],
     }
 }

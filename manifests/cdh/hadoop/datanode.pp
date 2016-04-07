@@ -1,21 +1,25 @@
-# == Class puppet_cdh::cdh5::hadoop::datanode
+# == Class puppet_cdh::cdh::hadoop::datanode
 # Installs and starts up a Hadoop DataNode.
 #
-class puppet_cdh::cdh5::hadoop::datanode {
-    Class['puppet_cdh::cdh5::hadoop'] -> Class['puppet_cdh::cdh5::hadoop::datanode']
+class puppet_cdh::cdh::hadoop::datanode inherits puppet_cdh::cdh::hadoop::worker {
+    
+    if $enabled {
+      Package['hadoop-hdfs-datanode'] -> Service['hadoop-hdfs-datanode']
+    } else {
+      Service['hadoop-hdfs-datanode'] -> Package['hadoop-hdfs-datanode']
+    }
 
     # install jobtracker daemon package
     package { 'hadoop-hdfs-datanode':
-        ensure => 'installed'
+        ensure => $ensure
     }
 
     # install datanode daemon package
     service { 'hadoop-hdfs-datanode':
-        ensure     => 'running',
-        enable     => true,
+        ensure     => $enabled,
+        enable     => $enabled,
         hasstatus  => true,
         hasrestart => true,
         alias      => 'datanode',
-        require    => Package['hadoop-hdfs-datanode'],
     }
 }

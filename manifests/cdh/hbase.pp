@@ -2,7 +2,7 @@
 # == Class cdh::hbase
 #
 
-class puppet_cdh::cdh5::hbase ($cluster_name = 'mycluster', $hostname = 'puppet-cdh',) {
+class puppet_cdh::cdh5::hbase ($cluster_name = 'mycluster', $hostname = 'puppetmaster',) {
   $config_directory = "/etc/hbase/conf.${cluster_name}"
   $service_name = 'hbase'
 
