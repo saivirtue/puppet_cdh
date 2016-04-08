@@ -274,10 +274,10 @@ class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
 	    ensure  => $hadoop_metrics2_ensure,
 	    content => template('puppet_cdh/hadoop/hadoop-metrics2.properties.erb'),
 	  }
+	  #make nproc limits file
+	  $service_name = 'hdfs'
+    file { "/etc/security/limits.d/hdfs.conf": content => template('puppet_cdh/os/ulimits.conf.erb'), }
 	}
-	
-	$service_name = 'hdfs'
-  file { "/etc/security/limits.d/hdfs.conf": content => template('puppet_cdh/os/ulimits.conf.erb'), }
 
   # If the current node is meant to be JournalNode,
   # include the journalnode class.  JournalNodes can

@@ -8,6 +8,9 @@ class puppet_cdh::cdh::hadoop::resourcemanager inherits puppet_cdh::cdh::hadoop:
 
     if $enabled{
       Package['hadoop-yarn-resourcemanager'] -> Service['hadoop-yarn-resourcemanager']
+      #make nproc limits file
+	    $service_name = 'yarn'
+	    file { "/etc/security/limits.d/yarn.conf": content => template('puppet_cdh/os/ulimits.conf.erb'), }
     } else {
       
       Service['hadoop-yarn-resourcemanager'] -> Package['hadoop-yarn-resourcemanager']
@@ -42,7 +45,4 @@ class puppet_cdh::cdh::hadoop::resourcemanager inherits puppet_cdh::cdh::hadoop:
         hasrestart => true,
         alias      => 'resourcemanager',
     }
-    
-    $service_name = 'yarn'
-    file { "/etc/security/limits.d/yarn.conf": content => template('puppet_cdh/os/ulimits.conf.erb'), }
 }
