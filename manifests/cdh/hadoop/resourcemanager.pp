@@ -7,12 +7,9 @@ class puppet_cdh::cdh::hadoop::resourcemanager inherits puppet_cdh::cdh::hadoop:
     Class['puppet_cdh::cdh::hadoop::namenode::primary'] -> Class['puppet_cdh::cdh::hadoop::resourcemanager']
 
     if $enabled{
-      # Make sure HDFS directories are created before
-      # resourcemanager is installed and started, but after
-      # the namenode.
-      Puppet_cdh::Cdh::Hadoop::Directory['/var/log'] -> Puppet_cdh::Cdh::Hadoop::Directory['/var/log/hadoop-yarn'] ->
       Package['hadoop-yarn-resourcemanager'] -> Service['hadoop-yarn-resourcemanager']
     } else {
+      
       Service['hadoop-yarn-resourcemanager'] -> Package['hadoop-yarn-resourcemanager']
     }
 
@@ -30,6 +27,7 @@ class puppet_cdh::cdh::hadoop::resourcemanager inherits puppet_cdh::cdh::hadoop:
             owner   => 'yarn',
             group   => 'mapred',
             mode    => '0755',
+            before  => Service['hadoop-yarn-resourcemanager'], #  Make sure HDFS directories are created before resourcemanager .
         }
     }
 

@@ -118,7 +118,7 @@
 #
 class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
   
-  Class['puppet_cdh::cdh::repo'] -> Class['puppet_cdh::cdh::hadoop::init']
+#  Class['puppet_cdh::cdh::repo'] -> Class['puppet_cdh::cdh::hadoop::init']
   
   # If $dfs_name_dir is a list, this will be the
   # first entry in the list.  Else just $dfs_name_dir.
@@ -168,14 +168,14 @@ class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
   $primary_resourcemanager_host = $resourcemanager_hosts[0]
   
     
-  if $enabled {
-    Package['hadoop-client'] -> File['/etc/hadoop',$config_directory] -> Puppet_cdh::Cdh::Alternative['hadoop-conf']
-  } else {
-    File['/etc/hadoop',$config_directory] -> Puppet_cdh::Cdh::Alternative['hadoop-conf'] -> Package['hadoop-client']
+  if !$enabled {
+    #this will ensure any unused files and folders being removed. (need to move other place?)
+    $remove_dirs = ["/var/lib/hadoop*","/var/log/hadoop*"]
+    puppet_cdh::os::directory {$remove_dirs: ensure => $ensure}
   }
 
   package { 'hadoop-client':
-    ensure   => $package_ensure,
+    ensure   => $package_ensure, #for remove dependency packages, use 'purged' (use this careful!)
     provider => 'yum',
   }
 
@@ -197,7 +197,7 @@ class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
   file { '/etc/hadoop':
     ensure  => $dir_enabled,
     force   => true,
-  }  
+  }
 
   puppet_cdh::cdh::alternative { 'hadoop-conf':
     link    => '/etc/hadoop/conf',

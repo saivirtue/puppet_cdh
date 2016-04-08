@@ -12,7 +12,7 @@ node 'puppetmaster' {
   class{ 'puppet_cdh::params':
     #top scope
     use_package      => true,
-    ensure           => absent,
+    ensure           => 'present',
     cdh_version      => '5',
     #hadoop scope
     cluster_name               => 'mycluster',
@@ -43,6 +43,4 @@ node 'puppetmaster' {
 #  notify{'test get local variable':
 #    message => "$puppet_cdh::cdh::hadoop::params::cluster_name",
 #  }
-  
-#  include puppet_cdh::cdh::zookeeper
 }

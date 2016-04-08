@@ -9,12 +9,12 @@
 #
 class puppet_cdh::cdh::hadoop::master inherits puppet_cdh::cdh::hadoop::init {
   
-  include puppet_cdh::cdh::hadoop::namenode
-  include puppet_cdh::cdh::hadoop::namenode::primary
+  contain puppet_cdh::cdh::hadoop::namenode
+  contain puppet_cdh::cdh::hadoop::namenode::primary
 
-  include puppet_cdh::cdh::hadoop::resourcemanager
-  include puppet_cdh::cdh::hadoop::historyserver
-
+  contain puppet_cdh::cdh::hadoop::resourcemanager
+  contain puppet_cdh::cdh::hadoop::historyserver
+  
   # Install a check_active_namenode script, this can be run
   # from any Hadoop client, but we will only run it from master nodes.
   # This script is useful for nagios/icinga checks.

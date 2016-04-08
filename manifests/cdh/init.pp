@@ -38,18 +38,15 @@
 #
 class puppet_cdh::cdh::init inherits puppet_cdh::params {
 
+  include puppet_cdh::cdh::hadoop::init
+  include puppet_cdh::cdh::hadoop::master
+  include puppet_cdh::cdh::hadoop::worker
+  include puppet_cdh::cdh::zookeeper::init
+
   if $enabled {
     Class['puppet_cdh::cdh::zookeeper::init'] -> Class['puppet_cdh::cdh::hadoop::init'] -> Class['puppet_cdh::cdh::hadoop::master'] -> Class['puppet_cdh::cdh::hadoop::worker']
   } else {
-    Service<| |> -> Package<| |>
-#    Class['puppet_cdh::cdh::hadoop::worker'] -> Class['puppet_cdh::cdh::hadoop::master'] -> Class['puppet_cdh::cdh::hadoop::init'] -> Class['puppet_cdh::cdh::zookeeper::init']
-  }
-
-  class { 'puppet_cdh::cdh::hadoop::init':
-  }
-  class { 'puppet_cdh::cdh::hadoop::master':
-  }
-  class { 'puppet_cdh::cdh::hadoop::worker':
+    Class['puppet_cdh::cdh::hadoop::init'] -> Class['puppet_cdh::cdh::hadoop::master'] -> Class['puppet_cdh::cdh::hadoop::worker'] -> Class['puppet_cdh::cdh::zookeeper::init']
   }
 
   #  class { 'puppet_cdh::cdh5::hue':
@@ -83,8 +80,6 @@ class puppet_cdh::cdh::init inherits puppet_cdh::params {
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,
   #  }
-  class { 'puppet_cdh::cdh::zookeeper::init':
-  }
   #  class { 'puppet_cdh::cdh5::flume':
   #    ensure      => $ensure,
   #    autoupgrade => $autoupgrade,

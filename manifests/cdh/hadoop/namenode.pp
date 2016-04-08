@@ -11,9 +11,10 @@
 class puppet_cdh::cdh::hadoop::namenode inherits puppet_cdh::cdh::hadoop::master {
 
     if $enabled {
-      Package['hadoop-hdfs-namenode'] -> Exec['touch hosts.exclude'] -> File[$dfs_name_dir] -> Exec['hadoop-namenode-format'] -> Service['hadoop-hdfs-namenode']
+      Package['hadoop-hdfs-namenode'] -> File[$dfs_name_dir] -> Exec['touch hosts.exclude'] -> Exec['hadoop-namenode-format'] -> Service['hadoop-hdfs-namenode']
+      
     } else {
-      Service['hadoop-hdfs-namenode'] -> Exec['hadoop-namenode-format'] -> File[$dfs_name_dir] -> Package['hadoop-hdfs-namenode']
+      Service['hadoop-hdfs-namenode'] -> File[$dfs_name_dir] -> Exec['hadoop-namenode-format'] -> Package['hadoop-hdfs-namenode']
     }
     
     # install namenode daemon package
@@ -49,7 +50,7 @@ class puppet_cdh::cdh::hadoop::namenode inherits puppet_cdh::cdh::hadoop::master
         command => '/usr/bin/hdfs namenode -format -nonInteractive',
         creates => "${dfs_name_dir_main}/current/VERSION",
         onlyif  => "test -d ${dfs_name_dir_main}",
-        path    => '/usr/bin',
+        path    => '/bin:/usr/bin:/usr/sbin',
         user    => 'hdfs',
     }
 

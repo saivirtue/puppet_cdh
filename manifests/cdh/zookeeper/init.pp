@@ -11,8 +11,6 @@
 # Free Usage <br/>
 class puppet_cdh::cdh::zookeeper::init inherits puppet_cdh::cdh::zookeeper::params {
   
-  Class['puppet_cdh::cdh::repo'] -> Class['puppet_cdh::cdh::zookeeper::init']
-  
   define loopZooConf () {
     $hostname_map = split("$name", "[|]")
     $hostname = $hostname_map[0]
@@ -73,9 +71,9 @@ class puppet_cdh::cdh::zookeeper::init inherits puppet_cdh::cdh::zookeeper::para
     package { 'zookeeper':
       ensure => "$ensure",
       tag    => 'cdh-zookeeper',
-    } ->
-    puppet_cdh::os::directory { '/var/lib/zookeeper': ensure => 'absent', } ->
-    puppet_cdh::os::directory { '/var/log/zookeeper': ensure => 'absent', } ->
-    puppet_cdh::os::directory { '/etc/zookeeper': ensure => 'absent', }
+    }
+    puppet_cdh::os::directory { '/var/lib/zookeeper': ensure => 'absent', require => Service['zookeeper-server'] }
+    puppet_cdh::os::directory { '/var/log/zookeeper': ensure => 'absent', require => Service['zookeeper-server'] }
+    puppet_cdh::os::directory { '/etc/zookeeper': ensure => 'absent', require => Service['zookeeper-server'] }
   }
 }

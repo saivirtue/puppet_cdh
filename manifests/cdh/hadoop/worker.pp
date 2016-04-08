@@ -11,6 +11,9 @@
 #
 class puppet_cdh::cdh::hadoop::worker inherits puppet_cdh::cdh::hadoop::init {
     
+    contain puppet_cdh::cdh::hadoop::nodemanager
+    contain puppet_cdh::cdh::hadoop::datanode
+    
     if $enabled {
       Puppet_cdh::Cdh::Hadoop::Worker::Paths[$datanode_mounts] -> Class['puppet_cdh::cdh::hadoop::datanode']
     } else {
@@ -22,12 +25,5 @@ class puppet_cdh::cdh::hadoop::worker inherits puppet_cdh::cdh::hadoop::init {
       ensure         => $enabled,
       yarn_local_path => $yarn_local_path,
       yarn_logs_path  => $yarn_logs_path,
-    }
-
-    class { 'puppet_cdh::cdh::hadoop::datanode':
-    }
-
-    # YARN uses NodeManager.
-    class { 'puppet_cdh::cdh::hadoop::nodemanager':
     }
 }

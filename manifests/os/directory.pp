@@ -19,7 +19,7 @@ define puppet_cdh::os::directory (
     if $ensure == 'present' {
         exec { "puppet_cdh::os::directory Create ${title}":
             command => "/bin/mkdir -p ${path} && /bin/chmod ${mode} ${path} && /bin/chown ${owner}:${group} ${path}",
-            unless  => "/usr/bin/test -e ${path}",
+            unless  => "stat --printf='' ${path} 2>/dev/null",
             path    => '/bin:/usr/bin',
             user    => 'root',
         }
@@ -27,7 +27,7 @@ define puppet_cdh::os::directory (
     else {
         exec { "puppet_cdh::os::directory Remove ${title}":
             command => "/bin/rm -rf ${path}",
-            onlyif  => "test -e ${path}",
+            onlyif  => "stat --printf='' ${path} 2>/dev/null",
             path    => '/bin:/usr/bin',
             user    => 'root',
         }

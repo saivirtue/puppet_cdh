@@ -6,8 +6,10 @@
 #
 class puppet_cdh::cdh::hadoop::historyserver inherits puppet_cdh::cdh::hadoop::master {
     
+    Class['puppet_cdh::cdh::hadoop::namenode'] -> Class['puppet_cdh::cdh::hadoop::resourcemanager']
+    
     if $enabled {
-      Puppet_cdh::Cdh::Hadoop::Directory['/user/history'] -> Package['hadoop-mapreduce-historyserver'] -> Service['hadoop-mapreduce-historyserver']
+      Package['hadoop-mapreduce-historyserver'] -> Service['hadoop-mapreduce-historyserver']
     } else {
       Service['hadoop-mapreduce-historyserver'] -> Package['hadoop-mapreduce-historyserver']
     }
@@ -19,6 +21,7 @@ class puppet_cdh::cdh::hadoop::historyserver inherits puppet_cdh::cdh::hadoop::m
 	        owner   => 'yarn',
 	        group   => 'hdfs',
 	        mode    => '1777',
+	        before  => Service['hadoop-mapreduce-historyserver'],
 	        require => Puppet_cdh::Cdh::Hadoop::Directory['/user'],
 	    }
     }
