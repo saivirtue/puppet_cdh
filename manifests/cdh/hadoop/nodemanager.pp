@@ -5,12 +5,10 @@ class puppet_cdh::cdh::hadoop::nodemanager inherits puppet_cdh::cdh::hadoop::wor
   
     if $enabled {
       Package['hadoop-yarn-nodemanager','hadoop-mapreduce'] -> Service['hadoop-yarn-nodemanager']
-    } else {
-      Service['hadoop-yarn-nodemanager'] -> Package['hadoop-yarn-nodemanager','hadoop-mapreduce']
-    }
-
-    package { ['hadoop-yarn-nodemanager', 'hadoop-mapreduce']:
+      
+      package { ['hadoop-yarn-nodemanager', 'hadoop-mapreduce']:
         ensure => $ensure,
+      }
     }
 
     service { 'hadoop-yarn-nodemanager':

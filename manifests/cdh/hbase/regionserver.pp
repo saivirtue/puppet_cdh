@@ -1,18 +1,20 @@
-class puppet_cdh::cdh5::hbase::regionserver (
-  ) inherits puppet_cdh::cdh5::hbase {
+class puppet_cdh::cdh::hbase::regionserver inherits puppet_cdh::cdh::hbase::init {
 
-  Class['puppet_cdh::cdh5::hbase::master'] -> Class['puppet_cdh::cdh5::hbase::regionserver']
+  if $enabled {
+    Package['hbase-regionserver'] -> Service['hbase-regionserver']
+    
+  } else {
+    Service['hbase-regionserver'] -> Package['hbase-regionserver']
+  }
+
   package { 'hbase-regionserver':
-    ensure => 'present',
-    tag    => 'cloudera-cdh5',
+    ensure => $ensure,
   }
   
   service { 'hbase-regionserver':
-    ensure     => 'running',
-    enable     => true,
+    ensure     => $enabled,
+    enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    alias      => 'hbase-regionserver',
-    require    => Package['hbase-regionserver'],
   }
 }

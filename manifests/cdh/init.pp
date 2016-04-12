@@ -36,19 +36,43 @@
 #
 # Free Usage
 #
-class puppet_cdh::cdh::init inherits puppet_cdh::params {
+class puppet_cdh::cdh::init(
+  $install_master,
+  $install_slave,
+) inherits puppet_cdh::params {
 
   if $enabled {
 	  include puppet_cdh::cdh::hadoop::init
 	  include puppet_cdh::cdh::hadoop::master
 	  include puppet_cdh::cdh::hadoop::worker
+	  include puppet_cdh::cdh::hbase::init
+	  include puppet_cdh::cdh::hbase::master
+	  include puppet_cdh::cdh::hbase::regionserver
 	  include puppet_cdh::cdh::zookeeper::init
-    Class['puppet_cdh::cdh::zookeeper::init'] -> Class['puppet_cdh::cdh::hadoop::init'] -> Class['puppet_cdh::cdh::hadoop::master'] -> Class['puppet_cdh::cdh::hadoop::worker']
+    Class['puppet_cdh::cdh::zookeeper::init']
+    ->Class['puppet_cdh::cdh::hadoop::init']
+    ->Class['puppet_cdh::cdh::hadoop::master']
+    ->Class['puppet_cdh::cdh::hadoop::worker']
+    ->Class['puppet_cdh::cdh::hbase::init']
+    ->Class['puppet_cdh::cdh::hbase::master']
+    ->Class['puppet_cdh::cdh::hbase::regionserver']
   } else {
     include puppet_cdh::cdh::hadoop::init
     include puppet_cdh::cdh::hadoop::master
+    include puppet_cdh::cdh::hadoop::worker
+    include puppet_cdh::cdh::hbase::init
+    include puppet_cdh::cdh::hbase::master
+    include puppet_cdh::cdh::hbase::regionserver
     include puppet_cdh::cdh::zookeeper::init
-    Class['puppet_cdh::cdh::hadoop::master'] -> Class['puppet_cdh::cdh::hadoop::init'] -> Class['puppet_cdh::cdh::zookeeper::init']
+    #puppet_cdh::cdh::hadoop::worker is NO need to remove pacakge, because purging hadoop-client will handle it.
+    #because of dependency of cdh, the uninstall order must not change below!
+    Class['puppet_cdh::cdh::hbase::regionserver']
+    ->Class['puppet_cdh::cdh::hbase::master']
+    ->Class['puppet_cdh::cdh::hbase::init']
+    ->Class['puppet_cdh::cdh::hadoop::master']
+    ->Class['puppet_cdh::cdh::hadoop::worker']
+    ->Class['puppet_cdh::cdh::hadoop::init']
+    ->Class['puppet_cdh::cdh::zookeeper::init']
   }
 
   #  class { 'puppet_cdh::cdh5::hue':

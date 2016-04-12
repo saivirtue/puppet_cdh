@@ -14,7 +14,10 @@
 #
 # Free Usage
 #
-class puppet_cdh inherits puppet_cdh::params {
+class puppet_cdh(
+  $install_master = false,
+  $install_slave  = false,
+) inherits puppet_cdh::params {
   # Validate our booleans
   validate_bool($autoupgrade)
   validate_bool($service_enable)
@@ -22,6 +25,8 @@ class puppet_cdh inherits puppet_cdh::params {
   validate_bool($install_lzo)
   validate_bool($install_java)
   validate_bool($install_jce)
+  validate_bool($install_master)
+  validate_bool($install_slave)
   
   if $enabled {
 	  exec { 'set_vm_swappiness':
@@ -85,10 +90,11 @@ class puppet_cdh inherits puppet_cdh::params {
   if $use_package {
     if $cdh_version =~ /^5/ {
       class { 'puppet_cdh::cdh::repo':
-      }
+      } ->
       class { 'puppet_cdh::cdh::init':
+        install_master => $install_master,
+        install_slave  => $install_slave,
       }
-      Class['puppet_cdh::cdh::repo'] -> Class['puppet_cdh::cdh::init']
       #        if $install_lzo {
       #          if $cg_version !~ /^5/ {
       #            fail('Parameter $cg_version must be 5 if $cdh_version is 5.')

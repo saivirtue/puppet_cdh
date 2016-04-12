@@ -5,13 +5,11 @@ class puppet_cdh::cdh::hadoop::datanode inherits puppet_cdh::cdh::hadoop::worker
     
     if $enabled {
       Package['hadoop-hdfs-datanode'] -> Service['hadoop-hdfs-datanode']
-    } else {
-      Service['hadoop-hdfs-datanode'] -> Package['hadoop-hdfs-datanode']
-    }
-
-    # install jobtracker daemon package
-    package { 'hadoop-hdfs-datanode':
+      
+      # install jobtracker daemon package
+      package { 'hadoop-hdfs-datanode':
         ensure => $ensure
+      }
     }
 
     # install datanode daemon package

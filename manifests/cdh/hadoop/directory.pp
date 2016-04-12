@@ -45,10 +45,13 @@ define puppet_cdh::cdh::hadoop::directory (
         }
     }
     else {
-        exec { "puppet_cdh::cdh::hadoop::directory ${title}":
-            command => "/usr/bin/hdfs dfs -rm -R ${path}",
-            onlyif  => "test -f /usr/bin/hdfs && /usr/bin/hdfs dfs -test -e ${path}",
-            user    => 'hdfs',
-        }
+        #since uninstall no need to remove hdfs data (file remove will handle this)
+        #comment this part for no usage
+#        exec { "puppet_cdh::cdh::hadoop::directory ${title}":
+#            command => "/usr/bin/hdfs dfs -rm -R ${path}",
+#            onlyif  => "test -f /usr/bin/hdfs && /usr/bin/hdfs dfs -test -e ${path}",
+#            path    => '/usr/bin:/bin',
+#            user    => 'hdfs',
+#        }
     }
 }

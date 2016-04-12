@@ -1,17 +1,20 @@
-class puppet_cdh::cdh5::hbase::master () inherits puppet_cdh::cdh5::hbase {
-  Class['puppet_cdh::cdh5::hbase'] -> Class['puppet_cdh::cdh5::hbase::master']
+class puppet_cdh::cdh::hbase::master inherits puppet_cdh::cdh::hbase::init {
+
+  if $enabled {
+    Package['hbase-master'] -> Service['hbase-master']
+    
+  } else {
+    Service['hbase-master'] -> Package['hbase-master']
+  }
 
   package { 'hbase-master':
-    ensure => 'present',
-    tag    => 'cloudera-cdh5',
+    ensure => $ensure,
   }
 
   service { 'hbase-master':
-    ensure     => 'running',
-    enable     => true,
+    ensure     => $enabled,
+    enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    alias      => 'hbase-master',
-    require    => Package['hbase-master'],
   }
 }

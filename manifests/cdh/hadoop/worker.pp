@@ -15,9 +15,9 @@ class puppet_cdh::cdh::hadoop::worker inherits puppet_cdh::cdh::hadoop::init {
     contain puppet_cdh::cdh::hadoop::datanode
     
     if $enabled {
-      Puppet_cdh::Cdh::Hadoop::Worker::Paths[$datanode_mounts] -> Class['puppet_cdh::cdh::hadoop::datanode']
+      Puppet_cdh::Cdh::Hadoop::Worker::Paths[$datanode_mounts] -> Class['puppet_cdh::cdh::hadoop::datanode'] -> Class['puppet_cdh::cdh::hadoop::nodemanager']
     } else {
-      Class['puppet_cdh::cdh::hadoop::datanode'] -> Puppet_cdh::Cdh::Hadoop::Worker::Paths[$datanode_mounts]
+      Class['puppet_cdh::cdh::hadoop::nodemanager'] -> Class['puppet_cdh::cdh::hadoop::datanode'] -> Puppet_cdh::Cdh::Hadoop::Worker::Paths[$datanode_mounts]
     }
 
     puppet_cdh::cdh::hadoop::worker::paths { $datanode_mounts:

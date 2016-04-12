@@ -9,6 +9,6 @@
 # === Copyright:
 #
 # Free Usage <br/>
-class puppet_cdh::cdh::hbase::params {
+class puppet_cdh::cdh::hbase::params inherits puppet_cdh::params {
 
 }

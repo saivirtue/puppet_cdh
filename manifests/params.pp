@@ -244,7 +244,7 @@ class puppet_cdh::params ( #parameters usage
   $db_pass = undef,
   $db_type = undef,
   $parcel_dir = undef,
-  #hadoop jart#
+  #hadoop part#
   $cluster_name = undef,
   $namenode_hosts = undef,
   $dfs_name_dir = undef,
@@ -262,6 +262,9 @@ class puppet_cdh::params ( #parameters usage
   $mapreduce_reduce_java_opts = undef,
   $mapreduce_map_memory_mb = undef,
   $mapreduce_reduce_memory_mb = undef,
+  #hbase part#
+  $hbase_master_host = undef,
+  $hbase_regionserver_hosts = undef,
   #zookeeper part#
   $zookeeper_hosts_hash,
 ) {

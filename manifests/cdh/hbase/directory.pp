@@ -1,4 +1,4 @@
-# == Define puppet_cdh::cdh5::hadoop::directory
+# == Define puppet_cdh::cdh::hbase::directory
 #
 # Creates or removes a directory in HDFS.
 #
@@ -27,29 +27,30 @@
 # $group  - HDFS directory group owner. Default: hdfs
 # $mode   - HDFS diretory mode.  Default 0755
 #
-define puppet_cdh::cdh5::hbase::directory (
+define puppet_cdh::cdh::hbase::directory (
     $path   = $title,
     $ensure = 'present',
     $owner  = 'hbase',
     $group  = 'hbase',
     $mode   = '0755')
 {
-    Class['puppet_cdh::cdh5::hbase'] -> Puppet_cdh::Cdh5::HBase::Directory[$title]
 
     if $ensure == 'present' {
-        exec { "puppet_cdh::cdh5::hbase::directory ${title}":
+        exec { "puppet_cdh::cdh::hbase::directory create ${title}":
             command => "/usr/bin/hdfs dfs -mkdir ${path} && /usr/bin/hdfs dfs -chmod ${mode} ${path} && /usr/bin/hdfs dfs -chown ${owner}:${group} ${path}",
-            unless  => [ '[ ! command -v /usr/bin/hdfs ] > /dev/null 2>&1', "/usr/bin/hdfs dfs -test -e ${path}"],
+            onlyif  => [ '[ `command -v /usr/bin/hdfs` ] > /dev/null 2>&1', "[ ! `/usr/bin/hdfs dfs -test -e ${path}` ]"],
             path    => '/usr/bin:/bin',
             user    => 'hdfs',
         }
     }
     else {
-        exec { "puppet_cdh::cdh5::hbase::directory ${title}":
-            command => "/usr/bin/hdfs dfs -rm -R ${path}",
-            onlyif  => "test -f /usr/bin/hdfs && /usr/bin/hdfs dfs -test -e ${path}",
-            user    => 'hdfs',
-            require => Service['hadoop-hdfs-namenode'],
-        }
+        #since uninstall no need to remove hdfs data (file remove will handle this)
+        #comment this part for no usage
+#        exec { "puppet_cdh::cdh::hbase::directory remove ${title}":
+#            command => "/usr/bin/hdfs dfs -rm -R ${path}",
+#            onlyif  => "test -f /usr/bin/hdfs && /usr/bin/hdfs dfs -test -e ${path}",
+#            path    => '/usr/bin:/bin',
+#            user    => 'hdfs',
+#        }
     }
 }
