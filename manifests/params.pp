@@ -264,7 +264,6 @@ class puppet_cdh::params ( #parameters usage
   $mapreduce_reduce_memory_mb = undef,
   #hbase part#
   $hbase_master_host = undef,
-  $hbase_regionserver_hosts = undef,
   #zookeeper part#
   $zookeeper_hosts_hash,
 ) {

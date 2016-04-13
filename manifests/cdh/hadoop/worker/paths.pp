@@ -67,7 +67,6 @@ define puppet_cdh::cdh::hadoop::worker::paths (
   if $ensure {
 	  exec { "create_$basedir":
 	    command  => "mkdir -p $basedir",
-	    path     => '/bin',
 	    provider => 'shell',
 	    unless   => "test -d $basedir",
 	  }

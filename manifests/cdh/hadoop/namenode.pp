@@ -28,8 +28,8 @@ class puppet_cdh::cdh::hadoop::namenode inherits puppet_cdh::cdh::hadoop::master
 	    # as users of this class might want to manage it themselves.
 	    # Instead, this exec just touches the file if it doesn't exist.
 	    exec { 'touch hosts.exclude':
-	        command => "/bin/touch ${config_directory}/hosts.exclude",
-	        unless  => "/usr/bin/test -f ${config_directory}/hosts.exclude",
+	        command => "touch ${config_directory}/hosts.exclude",
+	        unless  => "test -f ${config_directory}/hosts.exclude",
 	    }
     }
 
@@ -47,10 +47,9 @@ class puppet_cdh::cdh::hadoop::namenode inherits puppet_cdh::cdh::hadoop::master
     # the namenode service is started.
     # namenode-format only execute if the ${dfs_name_dir_main} exists (not uninstall case).
     exec { 'hadoop-namenode-format':
-        command => '/usr/bin/hdfs namenode -format -nonInteractive',
+        command => 'hdfs namenode -format -nonInteractive',
         creates => "${dfs_name_dir_main}/current/VERSION",
         onlyif  => "test -d ${dfs_name_dir_main}",
-        path    => '/bin:/usr/bin:/usr/sbin',
         user    => 'hdfs',
     }
 

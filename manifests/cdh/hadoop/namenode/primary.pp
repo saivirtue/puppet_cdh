@@ -13,8 +13,8 @@ class puppet_cdh::cdh::hadoop::namenode::primary inherits puppet_cdh::cdh::hadoo
     if ($ha_enabled) {
         exec { 'haaadmin-transitionToActive':
             # $namenode_id is set in parent puppet_cdh::cdh::hadoop::namenode class.
-            command     => "/usr/bin/hdfs haadmin -transitionToActive ${primary_namenode_id}",
-            unless      => "/usr/bin/hdfs haadmin -getServiceState    ${primary_namenode_id} | /bin/grep -q active",
+            command     => "hdfs haadmin -transitionToActive ${primary_namenode_id}",
+            unless      => "hdfs haadmin -getServiceState    ${primary_namenode_id} | grep -q active",
             user        => 'hdfs',
             # Only run this command if the namenode was just formatted
             # and after the namenode has started up.

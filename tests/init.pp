@@ -1,3 +1,7 @@
+Exec {
+  path => ['/usr/bin:/usr/sbin:/bin:/sbin:'],
+}
+
 node 'puppetmaster' {
   #install CM Server
   /*
@@ -31,15 +35,12 @@ node 'puppetmaster' {
     mapreduce_reduce_java_opts => '-Djava.net.preferIPv4Stack=true -Xmx858993459',
     mapreduce_map_memory_mb    => '512',
     mapreduce_reduce_memory_mb => '1024',
-    #hadoop scope
+    #hbase scope
     hbase_master_host        => 'puppetmaster',
-    hbase_regionserver_hosts => 'puppetmaster',
     #zookeeper scope
     zookeeper_hosts_hash => {'puppetmaster' => '1'}, #must specify with : hostname => zid
   }
-  class { 'puppet_cdh': 
-    install_master => true,
-    install_slave  => true,  
+  class { 'puppet_cdh':  
   }
 
 #include puppet_cdh::params

@@ -36,10 +36,7 @@
 #
 # Free Usage
 #
-class puppet_cdh::cdh::init(
-  $install_master,
-  $install_slave,
-) inherits puppet_cdh::params {
+class puppet_cdh::cdh::init inherits puppet_cdh::params {
 
   if $enabled {
 	  include puppet_cdh::cdh::hadoop::init

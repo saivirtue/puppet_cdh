@@ -14,10 +14,7 @@
 #
 # Free Usage
 #
-class puppet_cdh(
-  $install_master = false,
-  $install_slave  = false,
-) inherits puppet_cdh::params {
+class puppet_cdh inherits puppet_cdh::params {
   # Validate our booleans
   validate_bool($autoupgrade)
   validate_bool($service_enable)
@@ -25,26 +22,21 @@ class puppet_cdh(
   validate_bool($install_lzo)
   validate_bool($install_java)
   validate_bool($install_jce)
-  validate_bool($install_master)
-  validate_bool($install_slave)
   
   if $enabled {
 	  exec { 'set_vm_swappiness':
 	    command  => 'sysctl -w vm.swappiness=0',
 	    unless   => 'test 0 -eq `sysctl -n vm.swappiness`',
-	    path     => '/sbin',
 	    provider => 'shell',
 	  } ->
 	  exec { 'disable_transparent_hugepage_defrag':
 	    command  => 'if [ -f /sys/kernel/mm/transparent_hugepage/defrag ]; then echo never > /sys/kernel/mm/transparent_hugepage/defrag; fi',
 	    unless   => 'if [ -f /sys/kernel/mm/transparent_hugepage/defrag ]; then grep -q "\[never\]" /sys/kernel/mm/transparent_hugepage/defrag; fi',
-	    path     => '/usr/bin:/usr/sbin:/bin:/sbin',
 	    provider => 'shell',
 	  } ->
 	  exec { 'disable_redhat_transparent_hugepage_defrag':
 	    command  => 'if [ -f /sys/kernel/mm/redhat_transparent_hugepage/defrag ]; then echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag; fi',
 	    unless   => 'if [ -f /sys/kernel/mm/redhat_transparent_hugepage/defrag ]; then grep -q "\[never\]" /sys/kernel/mm/redhat_transparent_hugepage/defrag; fi',
-	    path     => '/usr/bin:/usr/sbin:/bin:/sbin',
 	    provider => 'shell',
 	  } ->
 	  # Configuring Dependencies Before Install Cluster
@@ -59,7 +51,6 @@ class puppet_cdh(
 	  }
 	  exec { 'ntp_sync':
 	    command => 'ntpdate -u pool.ntp.org',
-	    path    => '/usr/sbin',
 	    require => Service['ntpd'],
 	  }
   }
@@ -89,11 +80,9 @@ class puppet_cdh(
   # Installing the CDH RPMs if we are going to use parcels.
   if $use_package {
     if $cdh_version =~ /^5/ {
-      class { 'puppet_cdh::cdh::repo':
-      } ->
-      class { 'puppet_cdh::cdh::init':
-        install_master => $install_master,
-        install_slave  => $install_slave,
+      class {'puppet_cdh::cdh::repo':
+      } -> 
+      class {'puppet_cdh::cdh::init':
       }
       #        if $install_lzo {
       #          if $cg_version !~ /^5/ {

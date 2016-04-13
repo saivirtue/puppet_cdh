@@ -53,7 +53,7 @@ class puppet_cdh::cdh::hadoop::mount(
     # Instead, we parse the output of ls. :(
     exec { 'mkdir_hdfs_mount_point':
         command => "/bin/mkdir -p ${mount_point}",
-        unless  => "/bin/ls $(/usr/bin/dirname ${mount_point}) 2> /dev/null | grep -q $(/usr/bin/basename ${mount_point})",
+        unless  => "ls $(/usr/bin/dirname ${mount_point}) 2> /dev/null | grep -q $(/usr/bin/basename ${mount_point})",
     }
 
     mount { 'hdfs-fuse':

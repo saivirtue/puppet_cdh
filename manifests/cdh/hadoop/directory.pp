@@ -38,9 +38,8 @@ define puppet_cdh::cdh::hadoop::directory (
 
     if $ensure == 'present' {
         exec { "puppet_cdh::cdh::hadoop::directory ${title}":
-            command => "/usr/bin/hdfs dfs -mkdir ${path} && /usr/bin/hdfs dfs -chmod ${mode} ${path} && /usr/bin/hdfs dfs -chown ${owner}:${group} ${path}",
-            onlyif  => [ '[ `command -v /usr/bin/hdfs` ] > /dev/null 2>&1', "[ ! `/usr/bin/hdfs dfs -test -e ${path}` ]"],
-            path    => '/usr/bin:/bin',
+            command => "hdfs dfs -mkdir ${path} && hdfs dfs -chmod ${mode} ${path} && hdfs dfs -chown ${owner}:${group} ${path}",
+            onlyif  => [ '[ `command -v /usr/bin/hdfs` ] > /dev/null 2>&1', "[ ! `hdfs dfs -test -e ${path}` ]"],
             user    => 'hdfs',
         }
     }
