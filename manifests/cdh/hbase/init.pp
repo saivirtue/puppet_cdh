@@ -27,16 +27,15 @@ class puppet_cdh::cdh::hbase::init inherits puppet_cdh::cdh::hbase::params {
   }
 
   if $enabled {
+        # sudo -u hdfs hdfs dfs -mkdir /hbase
+    # sudo -u hdfs hdfs dfs -chmod 0755 /hbase
+    puppet_cdh::cdh::hadoop::directory { '/hbase':
+      owner => 'hbase',
+      group => 'hbase',
+      mode  => '0755',
+      require => Service['hadoop-hdfs-namenode'],
+    }
 	  file { "/etc/security/limits.d/hbase.conf": content => template('puppet_cdh/os/ulimits.conf.erb'), }
 	  file { "/etc/hbase/conf/hbase-site.xml": content => template('puppet_cdh/hbase/hbase-site.xml.erb'), }
-  }
-
-  # sudo -u hdfs hdfs dfs -mkdir /hbase
-  # sudo -u hdfs hdfs dfs -chmod 0755 /hbase
-  puppet_cdh::cdh::hbase::directory { '/hbase':
-    owner  => 'hbase',
-    ensure => $ensure,
-    group  => 'hbase',
-    mode   => '0755',
   }
 }

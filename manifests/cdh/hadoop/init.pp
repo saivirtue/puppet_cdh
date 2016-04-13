@@ -1,124 +1,26 @@
+# == Class: puppet_cdh:cdh::hadoop::init
 #
-# == Class puppet_cdh::cdh::hadoop::init
+# This class handles installing Hadoop.
 #
-# Installs the main Hadoop/HDFS packages and config files.  This
-# By default this will set Hadoop config files to run YARN (MapReduce 2).
+# === Parameters:
 #
-# This assumes that your JBOD mount points are already
-# formatted and mounted at the locations listed in $datanode_mounts.
+# === Actions:
 #
-# dfs.datanode.data.dir will be set to each of ${dfs_data_dir_mounts}/$data_path
-# yarn.nodemanager.local-dirs will be set to each of ${dfs_data_dir_mounts}/$yarn_local_path
-# yarn.nodemanager.log-dirs will be set to each of ${dfs_data_dir_mounts}/$yarn_logs_path
+# === Requires:
 #
-# == Parameters
-#   $namenode_hosts             - Array of NameNode host(s).  The first entry in this
-#                                 array will be the primary NameNode.  The primary NameNode
-#                                 will also be used as the host for the historyserver, proxyserver,
-#                                 and resourcemanager.   Use multiple hosts hosts if you
-#                                 configuring Hadoop with HA NameNodes.
-#   $dfs_name_dir               - Path to hadoop NameNode name directory.  This
-#                                 can be an array of paths or a single string path.
-#   $cluster_name               - Arbitrary logical HDFS cluster name.  This will be used
-#                                 as the nameserivce id if you set $ha_enabled to true.
-#                                 Default: 'cdh'.
-#   $journalnode_hosts          - Array of JournalNode hosts.  If this is provided,
-#                                 Hadoop will be configured to expect to have
-#                                 a primary NameNode as well as at least
-#                                 one Standby NameNode for use in high availibility mode.
-#   $dfs_journalnode_edits_dir  - Path to JournalNode edits dir.  This will be
-#                                 ignored if $ha_enabled is false.
-#   $datanode_mounts            - Array of JBOD mount points.  Hadoop datanode and
-#                                 mapreduce/yarn directories will be here.
-#   $dfs_data_path              - Path relative to JBOD mount point for HDFS data directories.
+# Nothing.
 #
-#   $resourcemanager_hosts      - Array of hosts on which ResourceManager is running.  If this has
-#                                 more than one host in it AND $zookeeper_hosts is set, HA YARN ResourceManager
-#                                 and automatic failover will be enabled.  This defaults to the value provided
-#                                 for $namenode_hosts.  Please be sure to include cdh::hadoop::resourcemanager
-#                                 directly on any standby RM hosts.  (The master RM will be included automatically)
-#                                 when you include cdh::hadoop::master).
-#   $zookeeper_hosts            - Array of Zookeeper hosts to use for HA YARN ResouceManager.
-#                                 Default: undef
-#   $enable_jmxremote           - enables remote JMX connections for all Hadoop services.
-#                                 Ports are not currently configurable.  Default: true.
-#   $yarn_local_path            - Path relative to JBOD mount point for yarn local directories.
-#   $yarn_logs_path             - Path relative to JBOD mount point for yarn log directories.
-#   $dfs_block_size             - HDFS block size in bytes.  Default 64MB.
-#   $io_file_buffer_size
-#   $map_tasks_maximum
-#   $reduce_tasks_maximum
-#   $mapreduce_job_reuse_jvm_num_tasks
-#   $reduce_parallel_copies
-#   $mapreduce_map_memory_mb
-#   $mapreduce_reduce_memory_mb
-#   $mapreduce_system_dir
-#   $mapreduce_task_io_sort_mb
-#   $mapreduce_task_io_sort_factor
-#   $mapreduce_map_java_opts
-#   $mapreduce_child_java_opts
-#   $yarn_app_mapreduce_am_resource_mb        - The amount of memory the MR AppMaster needs.
-#   $yarn_app_mapreduce_am_command_opts       - Java opts for the MR App Master processes. The following symbol, if
-#                                               present, will be interpolated: @taskid@ is replaced by current TaskID
-#   $yarn_app_mapreduce_am_job_client_port_range - Range of ports that the MapReduce AM can use when binding.
-#                                                  Leave blank if you want all possible ports.
-#                                                  For example. 50000-50050,50100-50200.  Default: undef
-#   $mapreduce_shuffle_port
-#   $mapreduce_intermediate_compression       - If true, intermediate MapReduce data
-#                                               will be compressed.  Default: true.
-#   $mapreduce_intermediate_compression_codec - Codec class to use for intermediate compression.
-#                                               Default: org.apache.hadoop.io.compress.DefaultCodec
-#   $mapreduce_output_compession              - If true, final output of MapReduce
-#                                               jobs will be compressed. Default: false.
-#   $mapreduce_output_compession_codec        - Codec class to use for final output compression.
-#                                               Default: org.apache.hadoop.io.compress.DefaultCodec
-#   $mapreduce_output_compession_type         - Whether to output compress on BLOCK or RECORD level.
-#                                               Default: RECORD
-#   $yarn_nodemanager_resource_memory_mb
-#   $yarn_nodemanager_resource_cpu_vcores     - Default: max($::processorcount - 1, 1)
-#   $yarn_scheduler_minimum_allocation_mb     - The minimum allocation for every container request at the RM,
-#                                               in MBs. Memory requests lower than this won't take effect, and
-#                                               the specified value will get allocated at minimum.
-#   $yarn_scheduler_maximum_allocation_mb     - The maximum allocation for every container request at the RM,
-#                                               in MBs. Memory requests higher than this won't take effect, and
-#                                               will get capped to this value.
-#   $yarn_scheduler_minimum_allocation_vcores - The minimum allocation for every container request at the RM,
-#                                               in terms of virtual CPU cores. Requests lower than this won't
-#                                               take effect, and the specified value will get allocated the
-#                                               minimum.  Default: undef (1)
-#   $yarn_scheduler_maximum_allocation_vcores - The maximum allocation for every container request at the RM,
-#                                               in terms of virtual CPU cores. Requests higher than this won't
-#                                               take effect, and will get capped to this value.  Default: undef (32)
-#   $yarn_resourcemanager_scheduler_class     - If you change this (e.g. to
-#                                               FairScheduler), you should also provide
-#                                               your own scheduler config .xml files
-#                                               outside of the cdh module.
-#   $hadoop_heapsize                          - -Xmx for NameNode and DataNode.  Default: undef
-#   $hadoop_namenode_opts                     - Any additional opts to pass to NameNode node on startup.  Default: undef
-#   $yarn_heapsize                            - -Xmx for YARN Daemons.           Default: undef
-#   $dfs_datanode_hdfs_blocks_metadata_enabled - Boolean which enables backend datanode-side support for the experimental
-#                                                DistributedFileSystem#getFileVBlockStorageLocations API..
-#                                                This is required if you want to use Impala.  Default: undef (false)
-
-#   $ganglia_hosts                            - Set this to an array of ganglia host:ports
-#                                               if you want to enable ganglia sinks in hadoop-metrics2.properites
-#   $net_topology_script_template             - Puppet ERb template path  to script that will be
-#                                               invoked to resolve node names to row or rack assignments.
-#                                               Default: undef
-#   $gelf_logging_enabled                     - Set this to true in order to configure GELF logging output, for Logstash
-#                                             - Needs: libjson-simple-java (Debian package)
-#                                             - Needs: logstash-gelf.jar (https://github.com/mp911de/logstash-gelf/releases)
-#   $gelf_logging_host                        - Destination host for GELF output. Default is localhost.
-#   $gelf_logging_port                        - Destination port for GELF output. Default is 12201.
-#   $fair_scheduler_template                  - The fair-scheduler.xml queue configuration template.
-#                                               If you set this to false or undef, FairScheduler will
-#                                               be disabled.  Default: cdh/hadoop/fair-scheduler.xml.erb
-#   $yarn_site_extra_properties               - Hash of extra property names to values that will be
-#                                               be rendered in yarn-site.xml.erb.  Default: undef
+# === Sample Usage:
+#
+# === Authors:
+#
+# Sam Cho <sam@is-land.com.tw>
+#
+# === Copyright:
+#
+# Free Usage
 #
 class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
-  
-#  Class['puppet_cdh::cdh::repo'] -> Class['puppet_cdh::cdh::hadoop::init']
   
   # If $dfs_name_dir is a list, this will be the
   # first entry in the list.  Else just $dfs_name_dir.

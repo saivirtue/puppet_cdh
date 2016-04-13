@@ -1,24 +1,11 @@
-# == Class: puppet_cdh:init
+# == Class: puppet_cdh::cdh::init
 #
 # This class handles installing the Cloudera Distribution, including Apache Hadoop.
 #
 # === Parameters:
 #
-# [*ensure*]
-#   Ensure if present or absent.
-#   Default: present
-#
-# [*autoupgrade*]
-#   Upgrade package automatically, if there is a newer version.
-#   Default: false
-#
-# [*service_ensure*]
-#   Ensure if service is running or stopped.
-#   Default: running
-#
 # === Actions:
 #
-# Installs Bigtop, Hadoop, Hue-plugins, HBase, Hive, Oozie, Pig, ZooKeeper, and Flume-NG.
 #
 # === Requires:
 #
@@ -26,7 +13,6 @@
 #
 # === Sample Usage:
 #
-#   class { 'puppet_cdh::cdh5': }
 #
 # === Authors:
 #
@@ -46,13 +32,13 @@ class puppet_cdh::cdh::init inherits puppet_cdh::params {
 	  include puppet_cdh::cdh::hbase::master
 	  include puppet_cdh::cdh::hbase::regionserver
 	  include puppet_cdh::cdh::zookeeper::init
-    Class['puppet_cdh::cdh::zookeeper::init']
-    ->Class['puppet_cdh::cdh::hadoop::init']
-    ->Class['puppet_cdh::cdh::hadoop::master']
-    ->Class['puppet_cdh::cdh::hadoop::worker']
-    ->Class['puppet_cdh::cdh::hbase::init']
-    ->Class['puppet_cdh::cdh::hbase::master']
-    ->Class['puppet_cdh::cdh::hbase::regionserver']
+#    Class['puppet_cdh::cdh::zookeeper::init']
+#    ->Class['puppet_cdh::cdh::hadoop::init']
+#    ->Class['puppet_cdh::cdh::hadoop::master']
+#    ->Class['puppet_cdh::cdh::hadoop::worker']
+#    ->Class['puppet_cdh::cdh::hbase::init']
+#    ->Class['puppet_cdh::cdh::hbase::master']
+#    ->Class['puppet_cdh::cdh::hbase::regionserver']
   } else {
     include puppet_cdh::cdh::hadoop::init
     include puppet_cdh::cdh::hadoop::master
@@ -63,13 +49,13 @@ class puppet_cdh::cdh::init inherits puppet_cdh::params {
     include puppet_cdh::cdh::zookeeper::init
     #puppet_cdh::cdh::hadoop::worker is NO need to remove pacakge, because purging hadoop-client will handle it.
     #because of dependency of cdh, the uninstall order must not change below!
-    Class['puppet_cdh::cdh::hbase::regionserver']
-    ->Class['puppet_cdh::cdh::hbase::master']
-    ->Class['puppet_cdh::cdh::hbase::init']
-    ->Class['puppet_cdh::cdh::hadoop::master']
-    ->Class['puppet_cdh::cdh::hadoop::worker']
-    ->Class['puppet_cdh::cdh::hadoop::init']
-    ->Class['puppet_cdh::cdh::zookeeper::init']
+#    Class['puppet_cdh::cdh::hbase::regionserver']
+#    ->Class['puppet_cdh::cdh::hbase::master']
+#    ->Class['puppet_cdh::cdh::hbase::init']
+#    ->Class['puppet_cdh::cdh::hadoop::master']
+#    ->Class['puppet_cdh::cdh::hadoop::worker']
+#    ->Class['puppet_cdh::cdh::hadoop::init']
+#    ->Class['puppet_cdh::cdh::zookeeper::init']
   }
 
   #  class { 'puppet_cdh::cdh5::hue':

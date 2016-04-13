@@ -1,6 +1,6 @@
 # == Class: puppet_cdh
 #
-# The main class for installing CM and CDH
+# The main class for installing CM or CDH
 #
 # === Requires:
 #
