@@ -39,7 +39,7 @@ define puppet_cdh::cdh::hadoop::directory (
     if $ensure == 'present' {
         exec { "puppet_cdh::cdh::hadoop::directory ${title}":
             command => "hdfs dfs -mkdir ${path} && hdfs dfs -chmod ${mode} ${path} && hdfs dfs -chown ${owner}:${group} ${path}",
-            onlyif  => [ '[ `command -v /usr/bin/hdfs` ] > /dev/null 2>&1', "[ ! `hdfs dfs -test -e ${path}` ]"],
+            unless  => ['[ ! `command -v /usr/bin/hdfs` ] > /dev/null 2>&1',"hdfs dfs -test -e ${path}"],
             user    => 'hdfs',
         }
     }

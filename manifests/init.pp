@@ -41,17 +41,18 @@ class puppet_cdh inherits puppet_cdh::params {
 	  } ->
 	  # Configuring Dependencies Before Install Cluster
 	  package { 'ntp':
-	    ensure => 'present',
+	    ensure => $ensure,
 	  }
 	  service { 'ntpd':
-	    ensure    => 'running',
-	    enable    => true,
+	    ensure    => $enabled,
+	    enable    => $enabled,
 	    hasstatus => true,
 	    require   => Package['ntp'],
 	  }
 	  exec { 'ntp_sync':
-	    command => 'ntpdate -u pool.ntp.org',
-	    require => Service['ntpd'],
+	    command     => 'ntpdate -u pool.ntp.org',
+	    refreshonly => true,
+	    subscribe   => Service['ntpd'],
 	  }
   }
 

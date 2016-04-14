@@ -18,11 +18,12 @@ class puppet_cdh::cdh::zookeeper::init inherits puppet_cdh::cdh::zookeeper::para
 
     augeas { "add zookeeper hosts in zoo.cfg of $hostname":
       lens    => "Simplevars.lns",
-      incl    => '/etc/zookeeper/conf/zoo.cfg',
+      incl    => '/etc/zookeeper/conf/zoo.cfg/',
       changes => [
-        "set server.${zid} $hostname:2888:3888",
+        "set server.${zid} ${hostname}:2888:3888",
         "insert #comment before server.${zid}",
         "set #comment[last()] 'zookeeper cluster node:${zid}'"],
+      onlyif  => "match server.${zid} not_include '${hostname}:2888:3888'",
     }
   }
 
@@ -48,8 +49,7 @@ class puppet_cdh::cdh::zookeeper::init inherits puppet_cdh::cdh::zookeeper::para
     $zid = $zookeeper_hosts_hash["$hostname"]
 
     exec { 'zookeeper_server_init':
-      command => "/sbin/service zookeeper-server init --myid $zid",
-      path    => '/usr/bin:/sbin',
+      command => "service zookeeper-server init --myid $zid",
       require => [Package['zookeeper'], Package['zookeeper-server'], LoopZooConf[$zookeeper_hosts_array]],
       onlyif  => 'test `find /var/lib/zookeeper -maxdepth 0 -empty`',
     }

@@ -19,6 +19,7 @@ class puppet_cdh::cdh::hadoop::master inherits puppet_cdh::cdh::hadoop::init {
   # from any Hadoop client, but we will only run it from master nodes.
   # This script is useful for nagios/icinga checks.
   file { '/usr/local/bin/check_hdfs_active_namenode':
+    ensure => $ensure,
     source => 'puppet:///modules/puppet_cdh/hadoop/check_hdfs_active_namenode',
     owner  => 'root',
     group  => 'hdfs',

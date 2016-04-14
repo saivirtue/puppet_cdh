@@ -2,7 +2,7 @@ Exec {
   path => ['/usr/bin:/usr/sbin:/bin:/sbin:'],
 }
 
-node 'mycentos' {
+node 'puppetmaster' {
   #install CM Server
   /*
   class { 'cloudera':
@@ -20,7 +20,7 @@ node 'mycentos' {
     cdh_version      => '5',
     #hadoop scope
     cluster_name               => 'mycluster',
-    namenode_hosts             => ['mycentos'],
+    namenode_hosts             => ['puppetmaster'],
     dfs_name_dir               => '/dfs/nn',
     datanode_mounts            => '/dfs/dn',
     yarn_nodemanager_resource_memory_mb      => '6144',
@@ -36,9 +36,9 @@ node 'mycentos' {
     mapreduce_map_memory_mb    => '512',
     mapreduce_reduce_memory_mb => '1024',
     #hbase scope
-    hbase_master_host        => 'mycentos',
+    hbase_master_host        => 'puppetmaster',
     #zookeeper scope
-    zookeeper_hosts_hash => {'mycentos' => '1'}, #must specify with : hostname => zid
+    zookeeper_hosts_hash => {'puppetmaster' => '1'}, #must specify with : hostname => zid
   }
   class { 'puppet_cdh':  
   }

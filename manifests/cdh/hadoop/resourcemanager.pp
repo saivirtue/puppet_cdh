@@ -22,15 +22,17 @@ class puppet_cdh::cdh::hadoop::resourcemanager inherits puppet_cdh::cdh::hadoop:
   # Hadoop Master ResouceManager.
   if $enabled and (!$yarn_ha_enabled or $::fqdn == $primary_resourcemanager_host) {
     # Create YARN HDFS directories.
-    # See: http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_yarn_cluster_deploy.html?scroll=topic_11_4_10_unique_1
+    # See:
+    # http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH5/latest/CDH5-Installation-Guide/cdh5ig_yarn_cluster_deploy.html?scroll=topic_11_4_10_unique_1
     puppet_cdh::cdh::hadoop::directory { '/var/log/hadoop-yarn':
       # sudo -u hdfs hdfs dfs -mkdir /var/log/hadoop-yarn
       # sudo -u hdfs hdfs dfs -chown yarn:mapred /var/log/hadoop-yarn
-      owner => 'yarn',
-      group => 'mapred',
-      mode  => '0755',
-      require => Service['hadoop-hdfs-namenode'],
-    #            before  => Service['hadoop-yarn-resourcemanager'], #  Make sure HDFS directories are created before resourcemanager .
+      owner   => 'yarn',
+      group   => 'mapred',
+      mode    => '0755',
+      require => [Service['hadoop-hdfs-namenode'], Puppet_cdh::Cdh::Hadoop::Directory['/var/log']],
+    #            before  => Service['hadoop-yarn-resourcemanager'], #  Make sure HDFS directories are created before resourcemanager
+    #            .
     }
   }
 

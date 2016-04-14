@@ -21,7 +21,6 @@
 # Free Usage
 #
 class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
-  
   # If $dfs_name_dir is a list, this will be the
   # first entry in the list.  Else just $dfs_name_dir.
   # This used in a couple of execs throughout this module.
@@ -57,28 +56,40 @@ class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
   # is intended to be used for this cluster.  HA YARN
   # require the zookeeper is configured, and that
   # multiple ResourceManagers are specificed.
-#  if $ha_enabled and size($resourcemanager_hosts) > 1 and $zookeeper_hosts {
-#    $yarn_ha_enabled = true
-#    $yarn_cluster_id = $cluster_name
-#  } else {
-#    $yarn_ha_enabled = false
-#    $yarn_cluster_id = undef
-#  }
+  #  if $ha_enabled and size($resourcemanager_hosts) > 1 and $zookeeper_hosts {
+  #    $yarn_ha_enabled = true
+  #    $yarn_cluster_id = $cluster_name
+  #  } else {
+  #    $yarn_ha_enabled = false
+  #    $yarn_cluster_id = undef
+  #  }
 
   # Assume the primary resourcemanager is the first entry in $resourcemanager_hosts
   # Set a variable here for reference in other classes.
   $primary_resourcemanager_host = $resourcemanager_hosts[0]
-  
-    
+
   if !$enabled {
-    #this will ensure any unused files and folders being removed. (need to move other place?)
-    $remove_dirs = ["/var/lib/hadoop*","/var/log/hadoop*"]
-    puppet_cdh::os::directory {$remove_dirs: ensure => $ensure}
+    # this will ensure any unused files and folders being removed. (need to move other place?)
+    $remove_dirs = ["/var/lib/hadoop*", "/var/log/hadoop*"]
+
+    puppet_cdh::os::directory { $remove_dirs: ensure => $ensure }
   }
 
-  package { 'hadoop-client':
-    ensure   => $package_ensure, #for remove dependency packages, use 'purged' (use this careful!)
-    provider => 'yum',
+#  package { 'hadoop-client':
+#    ensure   => $package_ensure, # for remove dependency packages, use 'purged' (use this careful!)
+#    provider => 'yum',
+#  }
+
+  if $enabled {
+    exec { 'package hadoop-client install':
+      command => 'yum -qy install hadoop-client',
+      unless  => 'rpm -qa | grep hadoop-client >/dev/null 2>&1',
+    }
+  } else {
+    exec { 'package hadoop-client remove':
+      command => 'yum -qy remove hadoop-client',
+      onlyif  => 'rpm -qa | grep hadoop-client >/dev/null 2>&1',
+    }
   }
 
   # Some Hadoop jobs need Zookeeper libraries, but for some reason they
@@ -91,14 +102,9 @@ class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
   #    }
 
   # Create the $cluster_name based $config_directory.
-  file { $config_directory:
-    ensure  => $dir_enabled,
-    force   => true,
-  }
-  
-  file { '/etc/hadoop':
-    ensure  => $dir_enabled,
-    force   => true,
+  file { ['/etc/hadoop/', $config_directory]:
+    ensure => $dir_enabled,
+    force  => true,
   }
 
   puppet_cdh::cdh::alternative { 'hadoop-conf':
@@ -107,86 +113,85 @@ class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
     enabled => $enabled,
   }
 
-
   if $enabled {
-	  # Render net-topology.sh from $net_topology_script_template
-	  # if it was given.
-	  $net_topology_script_ensure = $net_topology_script_template ? {
-	    undef   => 'absent',
-	    default => 'present',
-	  }
-	  $net_topology_script_path = "${config_directory}/net-topology.sh"
-	
-	  file { $net_topology_script_path:
-	    ensure => $net_topology_script_ensure,
-	    mode   => '0755',
-	  }
-	
-	  # Conditionally overriding content attribute since
-	  # $net_topology_script_template is default undef.
-	  if ($net_topology_script_ensure == 'present') {
-	    File[$net_topology_script_path] {
-	      content => template($net_topology_script_template), }
-	  }
-	
-	  $fair_scheduler_enabled = $fair_scheduler_template ? {
-	    undef   => false,
-	    false   => false,
-	    default => true,
-	  }
-	
-	  $fair_scheduler_allocation_file_ensure = $fair_scheduler_enabled ? {
-	    true    => 'present',
-	    false   => 'absent',
-	    default => 'absent',
-	  }
-	
-	  # FairScheduler can be enabled
-	  # and this file will be used to configure
-	  # FairScheduler queues.
-	  file { "${config_directory}/fair-scheduler.xml":
-	    ensure  => $fair_scheduler_allocation_file_ensure,
-	    content => template($fair_scheduler_template),
-	  }
-	
-	  file { "${config_directory}/log4j.properties": content => template('puppet_cdh/hadoop/log4j.properties.erb'), }
-	
-	  file { "${config_directory}/core-site.xml": content => template('puppet_cdh/hadoop/core-site.xml.erb'), }
-	
-	  file { "${config_directory}/hdfs-site.xml": content => template('puppet_cdh/hadoop/hdfs-site.xml.erb'), }
-	
-	  file { "${config_directory}/hadoop-env.sh": content => template('puppet_cdh/hadoop/hadoop-env.sh.erb'), }
-	
-	  file { "${config_directory}/mapred-site.xml": content => template('puppet_cdh/hadoop/mapred-site.xml.erb'), }
-	
-	  file { "${config_directory}/yarn-site.xml": content => template('puppet_cdh/hadoop/yarn-site.xml.erb'), }
-	
-	  file { "${config_directory}/yarn-env.sh": content => template('puppet_cdh/hadoop/yarn-env.sh.erb'), }
-	
-	  file { "${config_directory}/container-executor.cfg": content => template('puppet_cdh/hadoop/container-executor.cfg.erb'), }
-	
-	  # Render hadoop-metrics2.properties
-	  # if we have Ganglia Hosts to send metrics to.
-	  $hadoop_metrics2_ensure = $ganglia_hosts ? {
-	    undef   => 'absent',
-	    default => 'present',
-	  }
-	
-	  file { "${config_directory}/hadoop-metrics2.properties":
-	    ensure  => $hadoop_metrics2_ensure,
-	    content => template('puppet_cdh/hadoop/hadoop-metrics2.properties.erb'),
-	  }
-	  #make nproc limits file
-	  $service_name = 'hdfs'
+    # Render net-topology.sh from $net_topology_script_template
+    # if it was given.
+    $net_topology_script_ensure = $net_topology_script_template ? {
+      undef   => 'absent',
+      default => 'present',
+    }
+    $net_topology_script_path = "${config_directory}/net-topology.sh"
+
+    file { $net_topology_script_path:
+      ensure => $net_topology_script_ensure,
+      mode   => '0755',
+    }
+
+    # Conditionally overriding content attribute since
+    # $net_topology_script_template is default undef.
+    if ($net_topology_script_ensure == 'present') {
+      File[$net_topology_script_path] {
+        content => template($net_topology_script_template), }
+    }
+
+    $fair_scheduler_enabled = $fair_scheduler_template ? {
+      undef   => false,
+      false   => false,
+      default => true,
+    }
+
+    $fair_scheduler_allocation_file_ensure = $fair_scheduler_enabled ? {
+      true    => 'present',
+      false   => 'absent',
+      default => 'absent',
+    }
+
+    # FairScheduler can be enabled
+    # and this file will be used to configure
+    # FairScheduler queues.
+    file { "${config_directory}/fair-scheduler.xml":
+      ensure  => $fair_scheduler_allocation_file_ensure,
+      content => template($fair_scheduler_template),
+    }
+
+    file { "${config_directory}/log4j.properties": content => template('puppet_cdh/hadoop/log4j.properties.erb'), }
+
+    file { "${config_directory}/core-site.xml": content => template('puppet_cdh/hadoop/core-site.xml.erb'), }
+
+    file { "${config_directory}/hdfs-site.xml": content => template('puppet_cdh/hadoop/hdfs-site.xml.erb'), }
+
+    file { "${config_directory}/hadoop-env.sh": content => template('puppet_cdh/hadoop/hadoop-env.sh.erb'), }
+
+    file { "${config_directory}/mapred-site.xml": content => template('puppet_cdh/hadoop/mapred-site.xml.erb'), }
+
+    file { "${config_directory}/yarn-site.xml": content => template('puppet_cdh/hadoop/yarn-site.xml.erb'), }
+
+    file { "${config_directory}/yarn-env.sh": content => template('puppet_cdh/hadoop/yarn-env.sh.erb'), }
+
+    file { "${config_directory}/container-executor.cfg": content => template('puppet_cdh/hadoop/container-executor.cfg.erb'), }
+
+    # Render hadoop-metrics2.properties
+    # if we have Ganglia Hosts to send metrics to.
+    $hadoop_metrics2_ensure = $ganglia_hosts ? {
+      undef   => 'absent',
+      default => 'present',
+    }
+
+    file { "${config_directory}/hadoop-metrics2.properties":
+      ensure  => $hadoop_metrics2_ensure,
+      content => template('puppet_cdh/hadoop/hadoop-metrics2.properties.erb'),
+    }
+    # make nproc limits file
+    $service_name = 'hdfs'
+
     file { "/etc/security/limits.d/hdfs.conf": content => template('puppet_cdh/os/ulimits.conf.erb'), }
-	}
+  }
 
   # If the current node is meant to be JournalNode,
   # include the journalnode class.  JournalNodes can
   # be started at any time.
-  if ($journalnode_hosts and (($::fqdn and $::fqdn in $journalnode_hosts)
-    or ($::ipaddress and $::ipaddress in $journalnode_hosts) 
-    or ($::ipaddress_eth1 and $::ipaddress_eth1 in $journalnode_hosts))) {
+  if ($journalnode_hosts and (($::fqdn and $::fqdn in $journalnode_hosts) or ($::ipaddress and $::ipaddress in $journalnode_hosts) 
+  or ($::ipaddress_eth1 and $::ipaddress_eth1 in $journalnode_hosts))) {
     include puppet_cdh::cdh::hadoop::journalnode
   }
 }
