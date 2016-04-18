@@ -11,8 +11,12 @@ class puppet_cdh::cdh::hadoop::master inherits puppet_cdh::cdh::hadoop::init {
   
   contain puppet_cdh::cdh::hadoop::namenode
   contain puppet_cdh::cdh::hadoop::namenode::primary
-
-  contain puppet_cdh::cdh::hadoop::resourcemanager
+  if ($::hostname == $secondary_host){
+    contain puppet_cdh::cdh::hadoop::namenode::secondarynamenode
+  }
+  if($::hostname == $primary_resourcemanager_host){
+    contain puppet_cdh::cdh::hadoop::resourcemanager
+  }
   contain puppet_cdh::cdh::hadoop::historyserver
   
   # Install a check_active_namenode script, this can be run

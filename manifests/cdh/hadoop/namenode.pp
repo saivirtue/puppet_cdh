@@ -28,6 +28,17 @@ class puppet_cdh::cdh::hadoop::namenode inherits puppet_cdh::cdh::hadoop::master
       command => "touch ${config_directory}/hosts.exclude",
       unless  => "test -f ${config_directory}/hosts.exclude",
     }
+    
+    # If $dfs_name_dir/current/VERSION doesn't exist, assume
+    # NameNode has not been formated.  Format it before
+    # the namenode service is started.
+    # namenode-format only execute if the ${dfs_name_dir_main} exists (not uninstall case).
+    exec { 'hadoop-namenode-format':
+      command => 'hdfs namenode -format -nonInteractive',
+      creates => "${dfs_name_dir_main}/current/VERSION",
+      onlyif  => "test -d ${dfs_name_dir_main}",
+      user    => 'hdfs',
+    }
   }
 
   # Ensure that the namenode directory has the correct permissions.
@@ -37,17 +48,6 @@ class puppet_cdh::cdh::hadoop::namenode inherits puppet_cdh::cdh::hadoop::master
     owner  => 'hdfs',
     group  => 'hdfs',
     mode   => '0700',
-  }
-
-  # If $dfs_name_dir/current/VERSION doesn't exist, assume
-  # NameNode has not been formated.  Format it before
-  # the namenode service is started.
-  # namenode-format only execute if the ${dfs_name_dir_main} exists (not uninstall case).
-  exec { 'hadoop-namenode-format':
-    command => 'hdfs namenode -format -nonInteractive',
-    creates => "${dfs_name_dir_main}/current/VERSION",
-    onlyif  => "test -d ${dfs_name_dir_main}",
-    user    => 'hdfs',
   }
 
   # namenode need to be started from puppet for create hdfs directories

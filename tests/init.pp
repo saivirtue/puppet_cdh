@@ -21,8 +21,13 @@ node 'puppetmaster' {
     #hadoop scope
     cluster_name               => 'mycluster',
     namenode_hosts             => ['puppetmaster'],
+    datanode_hosts             => ['puppetmaster'],
+    secondary_host             => 'puppetmaster',
     dfs_name_dir               => '/dfs/nn',
     datanode_mounts            => '/dfs/dn',
+    #yarn scope
+    resourcemanager_hosts                    => ['puppetmaster'],
+    nodemanager_hosts                        => ['puppetmaster'],
     yarn_nodemanager_resource_memory_mb      => '6144',
     yarn_nodemanager_resource_cpu_vcores     => '4',
     yarn_scheduler_minimum_allocation_mb     => '512',
@@ -37,6 +42,7 @@ node 'puppetmaster' {
     mapreduce_reduce_memory_mb => '1024',
     #hbase scope
     hbase_master_host        => 'puppetmaster',
+    regionserver_hosts       => ['puppetmaster'],
     #zookeeper scope
     zookeeper_hosts_hash => {'puppetmaster' => '1'}, #must specify with : hostname => zid
   }

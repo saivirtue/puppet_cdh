@@ -68,6 +68,12 @@ end
   </property>
 <% end # if @ha_enabled -%>
 
+<% if ! @ha_enabled -%>
+  <property>
+    <name>dfs.namenode.http-address</name>
+    <value><%= @primary_namenode_host %>:50070</value>
+  </property>
+<% end # if ! @ha_enabled -%>
   <property>
    <name>dfs.namenode.name.dir</name>
    <value>file://<%= (@dfs_name_dir.class == Array) ? @dfs_name_dir.join(',file://') : @dfs_name_dir %></value>

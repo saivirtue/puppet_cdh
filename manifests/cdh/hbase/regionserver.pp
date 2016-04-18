@@ -4,8 +4,9 @@ class puppet_cdh::cdh::hbase::regionserver inherits puppet_cdh::cdh::hbase::init
   } else {
     #    Service['hbase-regionserver'] -> Package['hbase-regionserver']
   }
-
-  package { 'hbase-regionserver': ensure => $ensure, }
+  if ($::hostname in $regionserver_hosts) {
+    package { 'hbase-regionserver': ensure => $ensure, }
+  }
 
   # service start/stop is handled by shell
   #  service { 'hbase-regionserver':

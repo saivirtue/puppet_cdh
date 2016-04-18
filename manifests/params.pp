@@ -247,9 +247,13 @@ class puppet_cdh::params ( #parameters usage
   #hadoop part#
   $cluster_name = undef,
   $namenode_hosts = undef,
+  $datanode_hosts = undef,
+  $secondary_host = undef,
   $dfs_name_dir = undef,
   $datanode_mounts = undef,
+  #yarn part#
   $resourcemanager_hosts = undef,
+  $nodemanager_hosts = undef,
   $yarn_nodemanager_resource_memory_mb = undef,
   $yarn_nodemanager_resource_cpu_vcores = undef,
   $yarn_scheduler_minimum_allocation_mb = undef,
@@ -264,13 +268,14 @@ class puppet_cdh::params ( #parameters usage
   $mapreduce_reduce_memory_mb = undef,
   #hbase part#
   $hbase_master_host = undef,
+  $regionserver_hosts = undef,
   #zookeeper part#
   $zookeeper_hosts_hash,
 ) {
   
   case $ensure {
-    /(present)/ : { $enabled = true $package_ensure='present' $dir_enabled = 'directory' }
-    /(absent)/  : { $enabled = false $package_ensure='purged' $dir_enabled = 'absent' }
+    /(present)/ : { $enabled = true $dir_enabled = 'directory' }
+    /(absent)/  : { $enabled = false $dir_enabled = 'absent' }
     default     : { fail('ensure parameter must be present or absent') }
   }
   
@@ -284,5 +289,15 @@ class puppet_cdh::params ( #parameters usage
     $safe_autoupgrade = str2bool($autoupgrade)
   } else {
     $safe_autoupgrade = $autoupgrade
+  }
+  
+  if $::operatingsystemmajrelease { # facter 1.7+
+    $majdistrelease = $::operatingsystemmajrelease
+  } elsif $::lsbmajdistrelease {    # requires LSB to already be installed
+    $majdistrelease = $::lsbmajdistrelease
+  } elsif $::os_maj_version {       # requires stahnma/epel
+    $majdistrelease = $::os_maj_version
+  } else {
+    $majdistrelease = regsubst($::operatingsystemrelease,'^(\d+)\.(\d+)','\1')
   }
 }

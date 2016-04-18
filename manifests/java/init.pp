@@ -36,6 +36,7 @@
 # Free Usage <br/>
 #
 class puppet_cdh::java::init inherits puppet_cdh::java::params {
+
   # Validate our booleans
   validate_bool($autoupgrade)
 
@@ -95,8 +96,8 @@ class puppet_cdh::java::init inherits puppet_cdh::java::params {
 
       # Remove the old config from pre-1.0.0 module releases.
       exec { 'java-alternatives-old':
-        command => 'update-alternatives --remove java /usr/java/default/jre/bin/java',
-        onlyif  => 'update-alternatives --display java | grep -q /usr/java/default/jre/bin/java',
+        command => 'update-alternatives --remove java /usr/java/default/bin/java',
+        onlyif  => 'update-alternatives --display java | grep -q /usr/java/default/bin/java',
         path    => '/bin:/usr/bin:/sbin:/usr/sbin',
         require => Package['jdk'],
         returns => [ 0, 2, ],
@@ -106,26 +107,26 @@ class puppet_cdh::java::init inherits puppet_cdh::java::params {
       case $ensure {
         'present': {
           exec { 'java-alternatives':
-            command => 'update-alternatives --install /usr/bin/java java /usr/java/default/bin/java 1601 \
---slave /usr/bin/keytool keytool /usr/java/default/bin/keytool \
---slave /usr/bin/orbd orbd /usr/java/default/bin/orbd \
---slave /usr/bin/pack200 pack200 /usr/java/default/bin/pack200 \
---slave /usr/bin/rmid rmid /usr/java/default/bin/rmid \
---slave /usr/bin/rmiregistry rmiregistry /usr/java/default/bin/rmiregistry \
---slave /usr/bin/servertool servertool /usr/java/default/bin/servertool \
---slave /usr/bin/tnameserv tnameserv /usr/java/default/bin/tnameserv \
---slave /usr/bin/unpack200 unpack200 /usr/java/default/bin/unpack200 \
---slave /usr/bin/ControlPanel ControlPanel /usr/java/default/bin/ControlPanel \
---slave /usr/bin/jcontrol jcontrol /usr/java/default/bin/jcontrol \
---slave /usr/share/man/man1/java.1 java.1.gz /usr/java/default/man/man1/java.1 \
---slave /usr/share/man/man1/keytool.1 keytool.1.gz /usr/java/default/man/man1/keytool.1 \
---slave /usr/share/man/man1/orbd.1 orbd.1.gz /usr/java/default/man/man1/orbd.1 \
---slave /usr/share/man/man1/pack200.1 pack200.1.gz /usr/java/default/man/man1/pack200.1 \
---slave /usr/share/man/man1/rmid.1 rmid.1.gz /usr/java/default/man/man1/rmid.1 \
---slave /usr/share/man/man1/rmiregistry.1 rmiregistry.1.gz /usr/java/default/man/man1/rmiregistry.1 \
---slave /usr/share/man/man1/servertool.1 servertool.1.gz /usr/java/default/man/man1/servertool.1 \
---slave /usr/share/man/man1/tnameserv.1 tnameserv.1.gz /usr/java/default/man/man1/tnameserv.1 \
---slave /usr/share/man/man1/unpack200.1 unpack200.1.gz /usr/java/default/man/man1/unpack200.1',
+            command => 'update-alternatives --install /usr/bin/java java /usr/java/default/bin/java 999999',
+#--slave /usr/bin/keytool keytool /usr/java/default/bin/keytool \
+#--slave /usr/bin/orbd orbd /usr/java/default/bin/orbd \
+#--slave /usr/bin/pack200 pack200 /usr/java/default/bin/pack200 \
+#--slave /usr/bin/rmid rmid /usr/java/default/bin/rmid \
+#--slave /usr/bin/rmiregistry rmiregistry /usr/java/default/bin/rmiregistry \
+#--slave /usr/bin/servertool servertool /usr/java/default/bin/servertool \
+#--slave /usr/bin/tnameserv tnameserv /usr/java/default/bin/tnameserv \
+#--slave /usr/bin/unpack200 unpack200 /usr/java/default/bin/unpack200 \
+#--slave /usr/bin/ControlPanel ControlPanel /usr/java/default/bin/ControlPanel \
+#--slave /usr/bin/jcontrol jcontrol /usr/java/default/bin/jcontrol \
+#--slave /usr/share/man/man1/java.1 java.1.gz /usr/java/default/man/man1/java.1 \
+#--slave /usr/share/man/man1/keytool.1 keytool.1.gz /usr/java/default/man/man1/keytool.1 \
+#--slave /usr/share/man/man1/orbd.1 orbd.1.gz /usr/java/default/man/man1/orbd.1 \
+#--slave /usr/share/man/man1/pack200.1 pack200.1.gz /usr/java/default/man/man1/pack200.1 \
+#--slave /usr/share/man/man1/rmid.1 rmid.1.gz /usr/java/default/man/man1/rmid.1 \
+#--slave /usr/share/man/man1/rmiregistry.1 rmiregistry.1.gz /usr/java/default/man/man1/rmiregistry.1 \
+#--slave /usr/share/man/man1/servertool.1 servertool.1.gz /usr/java/default/man/man1/servertool.1 \
+#--slave /usr/share/man/man1/tnameserv.1 tnameserv.1.gz /usr/java/default/man/man1/tnameserv.1 \
+#--slave /usr/share/man/man1/unpack200.1 unpack200.1.gz /usr/java/default/man/man1/unpack200.1',
             unless  => 'update-alternatives --display java | grep -q /usr/java/default/bin/java',
             path    => '/bin:/usr/bin:/sbin:/usr/sbin',
             require => Package['jdk'],
@@ -133,7 +134,7 @@ class puppet_cdh::java::init inherits puppet_cdh::java::params {
           }
 
           exec { 'javac-alternatives':
-            command => 'update-alternatives --install /usr/bin/javac javac /usr/java/default/bin/javac 1601 \
+            command => 'update-alternatives --install /usr/bin/javac javac /usr/java/default/bin/javac 999999 \
 --slave /usr/bin/appletviewer appletviewer /usr/java/default/bin/appletviewer \
 --slave /usr/bin/apt apt /usr/java/default/bin/apt \
 --slave /usr/bin/extcheck extcheck /usr/java/default/bin/extcheck \
@@ -200,7 +201,7 @@ class puppet_cdh::java::init inherits puppet_cdh::java::params {
           }
 
           exec { 'javaplugin-alternatives':
-            command => 'mkdir -p /usr/lib64/mozilla/plugins; update-alternatives --install /usr/lib64/mozilla/plugins/libjavaplugin.so libjavaplugin.so.x86_64 /usr/java/default/jre/lib/amd64/libnpjp2.so 1601 \
+            command => 'mkdir -p /usr/lib64/mozilla/plugins; update-alternatives --install /usr/lib64/mozilla/plugins/libjavaplugin.so libjavaplugin.so.x86_64 /usr/java/default/jre/lib/amd64/libnpjp2.so 999999 \
 --slave /usr/bin/javaws javaws /usr/java/default/bin/javaws \
 --slave /usr/share/man/man1/javaws.1 javaws.1.gz /usr/java/default/man/man1/javaws.1',
             unless  => 'update-alternatives --display libjavaplugin.so.x86_64 | grep -q /usr/java/default/jre/lib/amd64/libnpjp2.so',

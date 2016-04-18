@@ -71,7 +71,6 @@ class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
   if !$enabled {
     # this will ensure any unused files and folders being removed. (need to move other place?)
     $remove_dirs = ["/var/lib/hadoop*", "/var/log/hadoop*"]
-
     puppet_cdh::os::directory { $remove_dirs: ensure => $ensure }
   }
 
