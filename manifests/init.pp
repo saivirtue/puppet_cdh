@@ -1,31 +1,23 @@
 # == Class: puppet_cdh
 #
-# The main class for installing CM or CDH
-#
-# === Requires:
-#
-# === Sample Usage:
+# The main class for installing CDH
 #
 # === Authors:
 #
 # Sam Cho <sam@is-land.com.tw>
 #
-# === Copyright:
-#
-# Free Usage
-#
 class puppet_cdh inherits puppet_cdh::params {
-  # Validate our booleans
+  # Validate booleans
   validate_bool($autoupgrade)
   validate_bool($service_enable)
-  validate_bool($use_package)
   validate_bool($install_lzo)
   validate_bool($install_java)
   validate_bool($install_jce)
-  
-  stage {'first': }
+
+  # java class must be installed first
+  stage { 'first': }
   Stage['first'] -> Stage['main']
-  
+
   if $enabled {
     exec { 'set_vm_swappiness':
       command  => 'sysctl -w vm.swappiness=0',
@@ -42,7 +34,6 @@ class puppet_cdh inherits puppet_cdh::params {
       unless   => 'if [ -f /sys/kernel/mm/redhat_transparent_hugepage/defrag ]; then grep -q "\[never\]" /sys/kernel/mm/redhat_transparent_hugepage/defrag; fi',
       provider => 'shell',
     } ->
-    # Configuring Dependencies Before Install Cluster
     package { 'ntp': ensure => $ensure, }
 
     service { 'ntpd':
@@ -68,52 +59,45 @@ class puppet_cdh inherits puppet_cdh::params {
   # iptables-save > /root/firewall.rules
   # /etc/init.d/iptables stop ; chkconfig iptables off
 
-  # Installing the CDH RPMs if we are going to use parcels.
-  if $use_package {
-    if $install_java {
-      class {'puppet_cdh::java::repo':
-        stage => 'first',
-      } ->
-      class {'puppet_cdh::java::init':
-        stage => 'first',
-      }
-    }
+  if $install_java {
+    class { 'puppet_cdh::java::repo': stage => 'first', } ->
+    class { 'puppet_cdh::java::init': stage => 'first', }
+  }
 
-    if $install_jce {
-      class { 'puppet_cdh::java::jce':
-        ensure  => $ensure,
-        require => Class['puppet_cdh::java::init'],
-      }
+  if $install_jce {
+    class { 'puppet_cdh::java::jce':
+      ensure  => $ensure,
+      require => Class['puppet_cdh::java::init'],
     }
+  }
 
-    if $cdh_version =~ /^5/ {
-      include puppet_cdh::cdh::repo
-      include puppet_cdh::cdh::init
-      Class['puppet_cdh::cdh::repo'] -> Class['puppet_cdh::cdh::init']
-      #        if $install_lzo {
-      #          if $cg_version !~ /^5/ {
-      #            fail('Parameter $cg_version must be 5 if $cdh_version is 5.')
-      #          }
-      #          class { 'puppet_cdh::gplextras5::repo':
-      #            ensure         => $ensure,
-      #            reposerver     => $cg_reposerver,
-      #            repopath       => $cg5_repopath,
-      #            version        => $cg_version,
-      #            proxy          => $proxy,
-      #            proxy_username => $proxy_username,
-      #            proxy_password => $proxy_password,
-      #            #require        => Anchor['puppet_cdh::begin'],
-      #            #before         => Anchor['puppet_cdh::end'],
-      #          }
-      #          class { 'puppet_cdh::gplextras5':
-      #            ensure      => $ensure,
-      #            autoupgrade => $autoupgrade,
-      #            #require     => Anchor['puppet_cdh::begin'],
-      #            #before      => Anchor['puppet_cdh::end'],
-      #          }
-      #        }
-    } else {
-      fail('Parameter $cdh_version must start with either 4 or 5.')
-    }
+  if $cdh_version =~ /^5/ {
+    include puppet_cdh::cdh::repo
+    include puppet_cdh::cdh::init
+    Class['puppet_cdh::cdh::repo'] -> Class['puppet_cdh::cdh::init']
+    #        if $install_lzo {
+    #          if $cg_version !~ /^5/ {
+    #            fail('Parameter $cg_version must be 5 if $cdh_version is 5.')
+    #          }
+    #          class { 'puppet_cdh::gplextras5::repo':
+    #            ensure         => $ensure,
+    #            reposerver     => $cg_reposerver,
+    #            repopath       => $cg5_repopath,
+    #            version        => $cg_version,
+    #            proxy          => $proxy,
+    #            proxy_username => $proxy_username,
+    #            proxy_password => $proxy_password,
+    #            #require        => Anchor['puppet_cdh::begin'],
+    #            #before         => Anchor['puppet_cdh::end'],
+    #          }
+    #          class { 'puppet_cdh::gplextras5':
+    #            ensure      => $ensure,
+    #            autoupgrade => $autoupgrade,
+    #            #require     => Anchor['puppet_cdh::begin'],
+    #            #before      => Anchor['puppet_cdh::end'],
+    #          }
+    #        }
+  } else {
+    fail('Parameter $cdh_version must start with 5.')
   }
 }

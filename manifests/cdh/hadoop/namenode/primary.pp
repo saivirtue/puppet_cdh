@@ -83,5 +83,13 @@ class puppet_cdh::cdh::hadoop::namenode::primary inherits puppet_cdh::cdh::hadoo
       mode    => '0755',
       require => Puppet_cdh::Cdh::Hadoop::Directory['/var'],
     }
+    
+    # sudo -u hdfs hdfs dfs -mkdir /hbase
+	  # sudo -u hdfs hdfs dfs -chmod 0755 /hbase
+	  puppet_cdh::cdh::hadoop::directory { '/hbase':
+	    owner   => 'hbase',
+	    group   => 'hbase',
+	    mode    => '0755',
+	  }
   }
 }

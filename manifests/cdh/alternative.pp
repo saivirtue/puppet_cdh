@@ -1,18 +1,25 @@
-# == Define cdh::alternative
+# == Class: puppet_cdh::cdh::alternative
+#
 # Runs update-alternatives command to create and set CDH related alternatives.
 # This is usually used to name config directories after $cluster_name.
 #
 # == Parameters
-# $link      - Symlink pointing to /etc/alternatives/$name.
-# $path      - Location of one of the alternative target files.
-# $priority  - integer; options with higher numbers have higher
-#              priority in automatic mode.  Default: 50
 #
-# == Usage
-#   cdh::alternative { 'hadoop-conf':
-#       link    => '/etc/hadoop/conf',
-#       path    => $config_directory,
-#   }
+# [*link*]
+#   Symlink pointing to /etc/alternatives/$name.
+#   Default: undef
+#
+# [*path*]
+#   Location of one of the alternative target files.
+#   Default: undef
+#
+# [*priority*]
+#   integer; options with higher numbers have higher priority in automatic mode.
+#   Default: 50
+#
+# === Authors:
+# 
+# Sam Cho <sam@is-land.com.tw>
 #
 define puppet_cdh::cdh::alternative ($link, $path, $priority = 50, $enabled) {
   # Update $title alternatives to point $link at $path
@@ -22,9 +29,8 @@ define puppet_cdh::cdh::alternative ($link, $path, $priority = 50, $enabled) {
       unless  => "update-alternatives --display ${name} | grep -q '${path}'",
       require => File[$path],
     }
-    # Remove $title alternatives at $path
   } else {
-    #no need to remove ; yum remove hadoop-client will remove the config
+#no need to remove ; yum remove hadoop-client will remove the config
 #    exec { "remove alternatives_${title}":
 #      command => "update-alternatives --remove ${name} ${path}",
 #      onlyif  => "update-alternatives --display ${name} | grep -q '${path}'",

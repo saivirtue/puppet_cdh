@@ -15,8 +15,7 @@ node 'puppetmaster' {
   #install CDH packages
   class{ 'puppet_cdh::params':
     #top scope
-    use_package      => true,
-    ensure           => 'absent',
+    ensure           => 'present',
     cdh_version      => '5',
     #hadoop scope
     cluster_name               => 'mycluster',

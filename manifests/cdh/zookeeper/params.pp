@@ -1,13 +1,10 @@
 # === Class: puppet_cdh::cdh::zookeeper::params
 #
-# The class for initial zookeeper parameters. <br/>
+# The class for initial zookeeper parameters.
 #
 # === Authors:
 #
-# Sam Cho <sam@is-land.com.tw> <br/>
+# Sam Cho <sam@is-land.com.tw>
 #
-# === Copyright:
-#
-# Free Usage <br/>
 class puppet_cdh::cdh::zookeeper::params inherits puppet_cdh::params {
 }

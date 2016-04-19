@@ -1,14 +1,11 @@
 # === Class: puppet_cdh::cdh::hbase::init
 #
-# The class for install hbase. <br/>
+# The class for install hbase.
 #
 # === Authors:
 #
-# Sam Cho <sam@is-land.com.tw> <br/>
+# Sam Cho <sam@is-land.com.tw>
 #
-# === Copyright:
-#
-# Free Usage <br/>
 class puppet_cdh::cdh::hbase::init inherits puppet_cdh::cdh::hbase::params {
   $config_directory = "/etc/hbase/conf.${cluster_name}"
   $service_name = 'hbase'
@@ -16,7 +13,7 @@ class puppet_cdh::cdh::hbase::init inherits puppet_cdh::cdh::hbase::params {
   $zookeeper_hosts = join($zookeeper_hosts_array,",")
   
   if !$enabled {
-    #this will ensure any unused files and folders being removed. (need to move other place?)
+    #this will ensure any unused files and folders being removed.
     $remove_dirs = ["/var/lib/hbase*","/var/log/hbase*"]
     puppet_cdh::os::directory {$remove_dirs: ensure => $ensure}
   }

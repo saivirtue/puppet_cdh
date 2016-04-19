@@ -1,14 +1,11 @@
 # === Class: puppet_cdh::cdh::params
 #
-# The class for initial CDh main parameters. <br/>
+# The class for initial CDh main parameters.
 #
 # === Authors:
 # 
 # Sam Cho <sam@is-land.com.tw> <br/>
 #
-# === Copyright:
-# 
-# Free Usage <br/>
 class puppet_cdh::cdh::params inherits puppet_cdh::params {
   # Customize these values if you (for example) mirror public YUM repos to your
   # internal network.
@@ -30,26 +27,6 @@ class puppet_cdh::cdh::params inherits puppet_cdh::params {
   # Since the top scope variable could be a string (if from an ENC), we might
   # need to convert it to a boolean.
 
-  $cm_use_tls = $::cloudera_cm_use_tls ? {
-    undef => false,
-    default => $::cloudera_cm_use_tls,
-  }
-  if is_string($cm_use_tls) {
-    $safe_cm_use_tls = str2bool($cm_use_tls)
-  } else {
-    $safe_cm_use_tls = $cm_use_tls
-  }
-
-  $use_package = $::cloudera_use_package ? {
-    undef => true,
-    default => $::cloudera_use_package,
-  }
-  if is_string($use_package) {
-    $safe_use_package = str2bool($use_package)
-  } else {
-    $safe_use_package = $use_package
-  }
-
   $install_lzo = $::cloudera_install_lzo ? {
     undef => false,
     default => $::cloudera_install_lzo,
@@ -60,55 +37,9 @@ class puppet_cdh::cdh::params inherits puppet_cdh::params {
     $safe_install_lzo = $install_lzo
   }
 
-  $install_java = $::cloudera_install_java ? {
-    undef => true,
-    default => $::cloudera_install_java,
-  }
-  if is_string($install_java) {
-    $safe_install_java = str2bool($install_java)
-  } else {
-    $safe_install_java = $install_java
-  }
-
-  $install_jce = $::cloudera_install_jce ? {
-    undef => false,
-    default => $::cloudera_install_jce,
-  }
-  if is_string($install_jce) {
-    $safe_install_jce = str2bool($install_jce)
-  } else {
-    $safe_install_jce = $install_jce
-  }
-
-  $install_cmserver = $::cloudera_install_cmserver ? {
-    undef => false,
-    default => $::cloudera_install_cmserver,
-  }
-  if is_string($install_cmserver) {
-    $safe_install_cmserver = str2bool($install_cmserver)
-  } else {
-    $safe_install_cmserver = $install_cmserver
-  }
-
-  $database_name = 'scm'
-  $username      = 'scm'
-  $password      = 'scm'
-  $db_host       = 'localhost'
-  $db_port       = '3306'
-  $db_user       = 'root'
-  $db_pass       = ''
-  $db_type       = 'embedded'
-
   case $::operatingsystem {
     'CentOS', 'RedHat', 'OEL', 'OracleLinux': {
-#      $java_package_name = 'jdk'
-#      $cdh_repopath = "/cdh4/redhat/${majdistrelease}/${::architecture}/cdh/"
-#      $cm_repopath = "/cm4/redhat/${majdistrelease}/${::architecture}/cm/"
-#      $cs_repopath = "/search/redhat/${majdistrelease}/${::architecture}/search/"
-#      $cg_repopath = "/gplextras/redhat/${majdistrelease}/${::architecture}/gplextras/"
-#      $cm5_repopath = "/cm5/redhat/${majdistrelease}/${::architecture}/cm/"
       $cdh_repopath = "/cdh5/redhat/${majdistrelease}/${::architecture}/cdh/"
-#      $cg5_repopath = "/gplextras5/redhat/${majdistrelease}/${::architecture}/gplextras/"
       $tls_dir = '/etc/pki/tls'
       $lzo_package_name = 'lzo'
     }
@@ -174,10 +105,4 @@ class puppet_cdh::cdh::params inherits puppet_cdh::params {
       fail("Module ${module_name} is not supported on ${::operatingsystem}")
     }
   }
-
-  $parcel_dir = $::cloudera_parcel_dir ? {
-    undef => '/opt/cloudera/parcels',
-    default => $::cloudera_parcel_dir,
-  }
-
 }

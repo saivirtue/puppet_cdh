@@ -1,6 +1,7 @@
 # == Class: cloudera::params
 #
 # the interface of all parameters usage
+#
 # === Parameters:
 #
 # [*ensure*]
@@ -211,17 +212,9 @@
 #   The password for the YUM proxy.
 #   Default: absent
 #
-# [*parcel_dir*]
-#   The directory where parcels are downloaded and distributed.
-#   Default: /opt/puppet_cdh/parcels
-#
 # === Authors:
 #
-# Sam Cho <sam@is-land.com.tw> <br/>
-#
-# === Copyright:
-#
-# Free Usage <br/>
+# Sam Cho <sam@is-land.com.tw>
 #
 class puppet_cdh::params ( #parameters usage
   #global part#
@@ -231,19 +224,9 @@ class puppet_cdh::params ( #parameters usage
   $cdh_version = '5',
   $cdh_reposerver = undef,
   $cdh_repopath = undef,
-  $use_package = true,
   $install_lzo = false,
   $install_java = false,
   $install_jce = false,
-  $database_name = undef,
-  $username = undef,
-  $password = undef,
-  $db_host = undef,
-  $db_port = undef,
-  $db_use = undef,
-  $db_pass = undef,
-  $db_type = undef,
-  $parcel_dir = undef,
   #hadoop part#
   $cluster_name = undef,
   $namenode_hosts = undef,
@@ -277,18 +260,6 @@ class puppet_cdh::params ( #parameters usage
     /(present)/ : { $enabled = true $dir_enabled = 'directory' }
     /(absent)/  : { $enabled = false $dir_enabled = 'absent' }
     default     : { fail('ensure parameter must be present or absent') }
-  }
-  
-  if is_string($service_enable) {
-    $safe_service_enable = str2bool($service_enable)
-  } else {
-    $safe_service_enable = $service_enable
-  }
-
-  if is_string($autoupgrade) {
-    $safe_autoupgrade = str2bool($autoupgrade)
-  } else {
-    $safe_autoupgrade = $autoupgrade
   }
   
   if $::operatingsystemmajrelease { # facter 1.7+

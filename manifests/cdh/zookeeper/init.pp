@@ -1,14 +1,11 @@
 # === Class: puppet_cdh::cdh::zookeeper::init
 #
-# The class for install zookeeper. <br/>
+# The class for install zookeeper.
 #
 # === Authors:
 #
-# Sam Cho <sam@is-land.com.tw> <br/>
+# Sam Cho <sam@is-land.com.tw>
 #
-# === Copyright:
-#
-# Free Usage <br/>
 class puppet_cdh::cdh::zookeeper::init inherits puppet_cdh::cdh::zookeeper::params {
   
   define loopZooConf () {

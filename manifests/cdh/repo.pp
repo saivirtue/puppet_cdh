@@ -34,27 +34,9 @@
 #   The password for the YUM proxy.
 #   Default: absent
 #
-# === Actions:
-#
-# Installs YUM repository configuration files.
-#
-# === Requires:
-#
-# Nothing.
-#
-# === Sample Usage:
-#
-#   class { 'puppet_cdh::cdh5::repo':
-#     version => '4.1',
-#   }
-#
 # === Authors:
 #
-# Sam Cho <sam@is-land.com.tw> <br/>
-#
-# === Copyright:
-#
-# Free Usage <br/>
+# Sam Cho <sam@is-land.com.tw>
 #
 class puppet_cdh::cdh::repo inherits puppet_cdh::cdh::params {
   case $ensure {
