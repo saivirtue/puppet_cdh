@@ -6,13 +6,14 @@
 # $port       - Port on which hive-metastore listens.  Default: undef
 # $heapsize   - -Xmx in MB. Default: undef
 #
-class puppet_cdh::cdh5::hive::metastore(
+class puppet_cdh::cdh::hive::metastore(
     $port             = undef,
     $heapsize         = undef,
-    $default_template = 'cdh/hive/hive-metastore.default.erb'
+    $default_template = 'puppet_cdh/hive/hive-metastore.default.erb'
 )
 {
-    Class['puppet_cdh::cdh5::hive'] -> Class['puppet_cdh::cdh5::hive::metastore']
+#  include puppet_cdh::cdh::hive
+#    Class['puppet_cdh::cdh::hive'] -> Class['puppet_cdh::cdh::hive::metastore']
 
     package { 'hive-metastore':
         ensure => 'installed',

@@ -1,7 +1,7 @@
 # == Class hive::defaults
 # Default Hive configs
 #
-class puppet_cdh::cdh5::hive::defaults {
+class puppet_cdh::cdh::hive::defaults {
     $zookeeper_hosts             = undef
     # if $zookeeper_hosts is set, assume concurrency
     # locking support is also wanted.
@@ -9,7 +9,6 @@ class puppet_cdh::cdh5::hive::defaults {
         undef   => false,
         default => true,
     }
-
     $jdbc_driver                 = 'com.mysql.jdbc.Driver'
     $jdbc_protocol               = 'mysql'
     $jdbc_database               = 'hive_metastore'
@@ -18,8 +17,8 @@ class puppet_cdh::cdh5::hive::defaults {
     $jdbc_username               = 'hive'
     $jdbc_password               = 'hive'
 
-    $db_root_username            = undef
-    $db_root_password            = undef
+    $db_root_username            = 'root'
+    $db_root_password            = '123456'
 
     $variable_substitute_depth   = undef
 
@@ -47,4 +46,6 @@ class puppet_cdh::cdh5::hive::defaults {
     $hive_site_template          = 'puppet_cdh/hive/hive-site.xml.erb'
     $hive_log4j_template         = 'puppet_cdh/hive/hive-log4j.properties.erb'
     $hive_exec_log4j_template    = 'puppet_cdh/hive/hive-exec-log4j.properties.erb'
+    include puppet_cdh::cdh::hive::metastore
+    include puppet_cdh::cdh::hive::server
 }

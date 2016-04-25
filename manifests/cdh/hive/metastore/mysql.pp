@@ -13,42 +13,42 @@
 # $db_root_username              - username for metastore database creation commands. Default: undef
 # $db_root_password              - password for metastore database creation commands.
 #
-class cdh::hive::metastore::mysql(
-    $db_root_username            = $cdh::hive::defaults::db_root_username,
-    $db_root_password            = $cdh::hive::defaults::db_root_password,
-) inherits cdh::hive::defaults
+class puppet_cdh::cdh::hive::metastore::mysql(
+    $db_root_username            = $puppet_cdh::cdh::hive::defaults::db_root_username,
+    $db_root_password            = $puppet_cdh::cdh::hive::defaults::db_root_password,
+) inherits puppet_cdh::cdh::hive::defaults
 {
     # Need to hive package in order to have
     # /usr/lib/hive/bin/schematool installed.
-    if !defined(Package['hive']) {
-        package { 'hive':
-            ensure => 'installed',
-        }
-    }
+#    if !defined(Package['hive']) {
+#        package { 'hive':
+#            ensure => 'installed',
+#        }
+#    }
 
-    if (!defined(Package['libmysql-java'])) {
-        package { 'libmysql-java':
+    if (!defined(Package['mysql-connector-java'])) {
+        package { 'mysql-connector-java':
             ensure => 'installed',
         }
     }
     # symlink the mysql.jar into /var/lib/hive/lib
-    file { '/usr/lib/hive/lib/libmysql-java.jar':
+    file { '/usr/share/java/mysql-connector-java.jar':
         ensure  => 'link',
-        target  => '/usr/share/java/mysql.jar',
-        require => Package['libmysql-java'],
+        target  => '/usr/lib/hive/lib/mysql-connector-java.jar',
+        require => Package['mysql-connector-java'],
     }
 
     # Infer mysql creds from either cdh::hive class
     # or from hiera, if the cdh::hive class has not been included.
-    if defined(Class['cdh::hive']) {
-        $jdbc_database = $cdh::hive::jdbc_database
-        $jdbc_username = $cdh::hive::jdbc_username
-        $jdbc_password = $cdh::hive::jdbc_password
+    if defined(Class['puppet_cdh::cdh::hive']) {
+        $jdbc_database = $puppet_cdh::cdh::hive::defaults::jdbc_database
+        $jdbc_username = $puppet_cdh::cdh::hive::defaults::jdbc_username
+        $jdbc_password = $puppet_cdh::cdh::hive::defaults::jdbc_password
     }
     else {
-        $jdbc_database = hiera('cdh::hive::jdbc_database', $cdh::hive::defaults::jdbc_database)
-        $jdbc_username = hiera('cdh::hive::jdbc_username', $cdh::hive::defaults::jdbc_username)
-        $jdbc_password = hiera('cdh::hive::jdbc_password', $cdh::hive::defaults::jdbc_password)
+        $jdbc_database = hiera('puppet_cdh::cdh::hive::jdbc_database', $puppet_cdh::cdh::hive::defaults::jdbc_database)
+        $jdbc_username = hiera('puppet_cdh::cdh::hive::jdbc_username', $puppet_cdh::cdh::hive::defaults::jdbc_username)
+        $jdbc_password = hiera('puppet_cdh::cdh::hive::jdbc_password', $puppet_cdh::cdh::hive::defaults::jdbc_password)
     }
 
     # Only use -u or -p flag to mysql commands if
@@ -79,16 +79,16 @@ FLUSH PRIVILEGES;\"",
         user    => 'root',
     }
 
-    # Run hive schematool to initialize the Hive metastore schema.
-    exec { 'hive_schematool_initialize_schema':
-        command => '/usr/lib/hive/bin/schematool -dbType mysql -initSchema',
-        unless  => "/usr/bin/mysql ${username_option} ${password_option} -D ${jdbc_database} -e \"SHOW TABLES;\" | grep -q 'VERSION'",
-        user    => 'root',
-        require => [
-            File['/usr/lib/hive/lib/libmysql-java.jar'],
-            Exec['hive_mysql_create_user'],
-            Exec['hive_mysql_create_database'],
-            Package['hive'],
-        ],
-    }
+#    # Run hive schematool to initialize the Hive metastore schema.
+#    exec { 'hive_schematool_initialize_schema':
+#        command => '/usr/lib/hive/bin/schematool -dbType mysql -initSchema',
+#        unless  => "/usr/bin/mysql ${username_option} ${password_option} -D ${jdbc_database} -e \"SHOW TABLES;\" | grep -q 'VERSION'",
+#        user    => 'root',
+#        require => [
+#            File['/usr/lib/hive/lib/mysql-connector-java.jar'],
+#            Exec['hive_mysql_create_user'],
+#            Exec['hive_mysql_create_database'],
+#            Package['hive'],
+#        ],
+#    }
 }

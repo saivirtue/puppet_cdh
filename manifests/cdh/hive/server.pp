@@ -8,15 +8,15 @@
 # $port       - Port on which hive-server2 listens.  Default: undef
 # $heapsize   - -Xmx in MB. Default: undef
 #
-class puppet_cdh::cdh5::hive::server(
+class puppet_cdh::cdh::hive::server(
     $port             = undef,
     $heapsize         = undef,
-    $default_template = 'cdh/hive/hive-server2.default.erb'
+    $default_template = 'puppet_cdh/hive/hive-server2.default.erb'
 )
 {
-    # puppet_cdh::cdh5::hive::server requires hadoop client and configs are installed.
-    Class['cdh::hadoop'] -> Class['puppet_cdh::cdh5::hive::server']
-    Class['puppet_cdh::cdh5::hive']   -> Class['puppet_cdh::cdh5::hive::server']
+    # puppet_cdh::cdh::hive::server requires hadoop client and configs are installed.
+#    Class['cdh::hadoop'] -> Class['puppet_cdh::cdh5::hive::server']
+#    Class['puppet_cdh::cdh::hive']   -> Class['puppet_cdh::cdh::hive::server']
 
     package { 'hive-server2':
         ensure => 'installed',
@@ -28,33 +28,33 @@ class puppet_cdh::cdh5::hive::server(
         require => Package['hive-server2'],
     }
 
-    # sudo -u hdfs hdfs dfs -mkdir /user/hive
-    # sudo -u hdfs hdfs dfs -chmod 0775 /user/hive
-    # sudo -u hdfs hdfs dfs -chown hive:hadoop /user/hive
-    puppet_cdh::cdh5::hadoop::directory { '/user/hive':
-        owner   => 'hive',
-        group   => 'hadoop',
-        mode    => '0775',
-        require => Package['hive'],
-    }
-    # sudo -u hdfs hdfs dfs -mkdir /user/hive/warehouse
-    # sudo -u hdfs hdfs dfs -chmod 1777 /user/hive/warehouse
-    # sudo -u hdfs hdfs dfs -chown hive:hadoop /user/hive/warehouse
-    puppet_cdh::cdh5::hadoop::directory { '/user/hive/warehouse':
-        owner   => 'hive',
-        group   => 'hadoop',
-        mode    => '1777',
-        require => Cdh::Hadoop::Directory['/user/hive'],
-    }
+#    # sudo -u hdfs hdfs dfs -mkdir /user/hive
+#    # sudo -u hdfs hdfs dfs -chmod 0775 /user/hive
+#    # sudo -u hdfs hdfs dfs -chown hive:hadoop /user/hive
+#    puppet_cdh::cdh::hadoop::directory { '/user/hive':
+#        owner   => 'hive',
+#        group   => 'hadoop',
+#        mode    => '0775',
+#        require => Package['hive'],
+#    }
+#    # sudo -u hdfs hdfs dfs -mkdir /user/hive/warehouse
+#    # sudo -u hdfs hdfs dfs -chmod 1777 /user/hive/warehouse
+#    # sudo -u hdfs hdfs dfs -chown hive:hadoop /user/hive/warehouse
+#    puppet_cdh::cdh::hadoop::directory { '/user/hive/warehouse':
+#        owner   => 'hive',
+#        group   => 'hadoop',
+#        mode    => '1777',
+#        require => Cdh::Hadoop::Directory['/user/hive'],
+#    }
 
-    service { 'hive-server2':
-        ensure     => 'running',
-        require    => [
-            Package['hive-server2'],
-            File['/etc/default/hive-server2'],
-            Cdh::Hadoop::Directory['/user/hive/warehouse'],
-        ],
-        hasrestart => true,
-        hasstatus  => true,
-    }
+#    service { 'hive-server2':
+#        ensure     => 'running',
+#        require    => [
+#            Package['hive-server2'],
+#            File['/etc/default/hive-server2'],
+#            Cdh::Hadoop::Directory['/user/hive/warehouse'],
+#        ],
+#        hasrestart => true,
+#        hasstatus  => true,
+#    }
 }

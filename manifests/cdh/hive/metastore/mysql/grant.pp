@@ -10,22 +10,22 @@
 # == Usage:
 # cdh::hive::metastore::mysql::grant { 'myotherhost.example.org': }
 #
-define cdh::hive::metastore::mysql::grant($allowed_host = $title) {
-    Class['cdh::hive::metastore::mysql'] -> Cdh::Hive::Metastore::Mysql::Grant[$title]
+define puppet_cdh::cdh::hive::metastore::mysql::grant($allowed_host = $title) {
+    Class['puppet_cdh::cdh::hive::metastore::mysql'] -> Puppet_cdh_::Cdh::Hive::Metastore::Mysql::Grant[$title]
 
-    $jdbc_database = $cdh::hive::metastore::mysql::jdbc_database
-    $jdbc_username = $cdh::hive::metastore::mysql::jdbc_username
-    $jdbc_password = $cdh::hive::metastore::mysql::jdbc_password
+    $jdbc_database = $puppet_cdh::cdh::hive::metastore::mysql::jdbc_database
+    $jdbc_username = $puppet_cdh::cdh::hive::metastore::mysql::jdbc_username
+    $jdbc_password = $puppet_cdh::cdh::hive::metastore::mysql::jdbc_password
 
     # Only use -u or -p flag to mysql commands if
     # root username or root password are set.
-    $username_option = $cdh::hive::metastore::mysql::db_root_username ? {
+    $username_option = $puppet_cdh::cdh::hive::metastore::mysql::db_root_username ? {
         undef   => '',
-        default => "-u'${cdh::hive::metastore::mysql::db_root_username}'",
+        default => "-u'${puppet_cdh::cdh::hive::metastore::mysql::db_root_username}'",
     }
-    $password_option = $cdh::hive::metastore::mysql::db_root_password ? {
+    $password_option = $puppet_cdh::cdh::hive::metastore::mysql::db_root_password ? {
         undef   => '',
-        default => "-p'${cdh::hive::metastore::mysql::db_root_password}'",
+        default => "-p'${puppet_cdh::cdh::hive::metastore::mysql::db_root_password}'",
     }
 
     exec { "hive_mysql_grant_${allowed_host}":
