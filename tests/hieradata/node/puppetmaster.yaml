@@ -1,0 +1,44 @@
+---
+classes:
+#Install Zookeeper
+  #- puppet_cdh::cdh::zookeeper::init
+  
+#Install Hadoop Client
+  - puppet_cdh::cdh::hadoop::init
+#Install Namenode
+  - puppet_cdh::cdh::hadoop::namenode
+  - puppet_cdh::cdh::hadoop::namenode::primary
+#Install Secondarynamenode
+  - puppet_cdh::cdh::hadoop::namenode::secondarynamenode
+#Install Historyserver
+  #- puppet_cdh::cdh::hadoop::historyserver
+#Install Datanode
+  - puppet_cdh::cdh::hadoop::datanode
+
+#Install Resourcemanager
+  #- puppet_cdh::cdh::hadoop::resourcemanager
+#Install Nodemanager
+  #- puppet_cdh::cdh::hadoop::nodemanager
+  
+#Install HBase Configuration
+  #- puppet_cdh::cdh::hbase::init
+#Install HBase Master
+  #- puppet_cdh::cdh::hbase::master
+#Install HBase Regionserver
+  #- puppet_cdh::cdh::hbase::regionserver
+
+puppet_cdh::params::install_java: false
+puppet_cdh::params::ensure: 'present'
+puppet_cdh::params::namenode_hosts:
+ - 'puppetmaster'
+puppet_cdh::params::datanode_hosts:
+ - 'puppetmaster'
+puppet_cdh::params::secondary_host: 'puppetmaster'
+puppet_cdh::params::resourcemanager_hosts:
+ - 'puppetmaster'
+puppet_cdh::params::nodemanager_hosts:
+ - 'puppetmaster'
+puppet_cdh::params::hbase_master_host: 'puppetmaster'
+puppet_cdh::params::regionserver_hosts:
+ - 'puppetmaster'
+puppet_cdh::params::zookeeper_hosts_hash: {'puppetmaster': '1'}

@@ -1,0 +1,9 @@
+---
+:backends:
+  - yaml
+:yaml:
+  :datadir: /home/sam/git/puppet_cdh/tests/hieradata
+:hierarchy:
+  - "node/%{::fqdn}"
+  - common
+:merge_behavior: native

@@ -1,0 +1,9 @@
+---
+classes:
+  #- puppet_cdh::cdh::zookeeper::init
+  - puppet_cdh::cdh::hadoop::init
+  #- puppet_cdh::cdh::hadoop::master
+  - puppet_cdh::cdh::hadoop::worker
+  - puppet_cdh::cdh::hbase::init
+  #- puppet_cdh::cdh::hbase::master
+  - puppet_cdh::cdh::hbase::regionserver

@@ -2,7 +2,7 @@
 # Installs and configures Hadoop YARN ResourceManager.
 # This will create YARN HDFS directories.
 #
-class puppet_cdh::cdh::hadoop::resourcemanager inherits puppet_cdh::cdh::hadoop::master {
+class puppet_cdh::cdh::hadoop::resourcemanager inherits puppet_cdh::cdh::hadoop::init {
   #    Class['puppet_cdh::cdh::hadoop::namenode::primary'] -> Class['puppet_cdh::cdh::hadoop::resourcemanager']
 
   if $enabled {

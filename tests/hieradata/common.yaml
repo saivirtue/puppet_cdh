@@ -1,0 +1,41 @@
+---
+puppet_cdh::params::install_java: true
+puppet_cdh::params::ensure: 'present'
+puppet_cdh::params::cdh_version: '5'
+#hadoop part
+puppet_cdh::params::cluster_name: 'mycluster'
+puppet_cdh::params::namenode_hosts:
+ - 'server-b1'
+puppet_cdh::params::datanode_hosts:
+ - 'server-b1'
+ - 'server-b2'
+ - 'server-b3'
+puppet_cdh::params::secondary_host: 'server-b2'
+puppet_cdh::params::dfs_name_dir: '/dfs/nn'
+puppet_cdh::params::datanode_mounts: '/dfs/dn'
+#yarn part
+puppet_cdh::params::resourcemanager_hosts:
+ - 'server-b1'
+puppet_cdh::params::nodemanager_hosts:
+ - 'server-b1'
+ - 'server-b2'
+ - 'server-b3'
+puppet_cdh::params::yarn_nodemanager_resource_memory_mb: '6144'
+puppet_cdh::params::yarn_nodemanager_resource_cpu_vcores: '4'
+puppet_cdh::params::yarn_scheduler_minimum_allocation_mb: '512'
+puppet_cdh::params::yarn_scheduler_maximum_allocation_mb: '3072'
+puppet_cdh::params::yarn_scheduler_minimum_allocation_vcores: '1'
+puppet_cdh::params::yarn_scheduler_maximum_allocation_vcores: '4'
+puppet_cdh::params::yarn_app_mapreduce_am_resource_mb: '1024'
+puppet_cdh::params::yarn_app_mapreduce_am_command_opts: '-Djava.net.preferIPv4Stack=true -Xmx858993459'
+puppet_cdh::params::mapreduce_map_java_opts: '-Djava.net.preferIPv4Stack=true -Xmx429496730'
+puppet_cdh::params::mapreduce_reduce_java_opts: '-Djava.net.preferIPv4Stack=true -Xmx858993459'
+puppet_cdh::params::mapreduce_map_memory_mb: '512'
+puppet_cdh::params::mapreduce_reduce_memory_mb: '1024'
+#hbase part
+puppet_cdh::params::hbase_master_host: 'server-b1'
+puppet_cdh::params::regionserver_hosts:
+ - 'server-b1'
+ - 'server-b2'
+ - 'server-b3'
+puppet_cdh::params::zookeeper_hosts_hash: {'server-b1': '1'} #must specify with : hostname: zid

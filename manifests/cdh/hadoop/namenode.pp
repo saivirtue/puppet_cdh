@@ -8,7 +8,7 @@
 # puppet_cdh::cdh::hadoop::init::nameservice_id), your JournalNodes should be running before
 # this class is applied.
 #
-class puppet_cdh::cdh::hadoop::namenode inherits puppet_cdh::cdh::hadoop::master {
+class puppet_cdh::cdh::hadoop::namenode inherits puppet_cdh::cdh::hadoop::init {
   if $enabled {
     Package['hadoop-hdfs-namenode'] -> File[$dfs_name_dir] -> Exec['touch hosts.exclude'] -> Exec['hadoop-namenode-format'] -> Service['hadoop-hdfs-namenode']
 

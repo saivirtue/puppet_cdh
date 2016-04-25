@@ -35,11 +35,12 @@ define puppet_cdh::cdh::hadoop::directory (
     $mode   = '0755')
 {
     Class['puppet_cdh::cdh::hadoop::init'] -> Puppet_cdh::Cdh::Hadoop::Directory[$title]
-
-    if $ensure == 'present' {
+    
+    if $ensure == 'present' {    
         exec { "puppet_cdh::cdh::hadoop::directory ${title}":
             command => "hdfs dfs -mkdir ${path} && hdfs dfs -chmod ${mode} ${path} && hdfs dfs -chown ${owner}:${group} ${path}",
-            unless  => ['[ ! `command -v /usr/bin/hdfs` ] > /dev/null 2>&1',"hdfs dfs -test -e ${path}"],
+            unless  => ["hdfs dfs -test -e ${path}"],
+            require => Exec['check_hdfs_command_exists'],
             user    => 'hdfs',
         }
     }

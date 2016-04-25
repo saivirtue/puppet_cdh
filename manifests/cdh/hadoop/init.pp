@@ -21,6 +21,19 @@
 # Free Usage
 #
 class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
+  
+  # Install a check_active_namenode script, this can be run
+  # from any Hadoop client, but we will only run it from master nodes.
+  # This script is useful for nagios/icinga checks.
+  file { '/usr/local/bin/check_hdfs_active_namenode':
+    ensure => $ensure,
+    source => 'puppet:///modules/puppet_cdh/hadoop/check_hdfs_active_namenode',
+    owner  => 'root',
+    group  => 'hdfs',
+    mode   => '0555',
+  }
+  
+
   # If $dfs_name_dir is a list, this will be the
   # first entry in the list.  Else just $dfs_name_dir.
   # This used in a couple of execs throughout this module.
@@ -80,12 +93,12 @@ class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
 #  }
 
   if $enabled {
-    exec { 'package hadoop-client install':
+    exec { 'package_hadoop-client':
       command => 'yum -qy install hadoop-client',
       unless  => 'rpm -qa | grep hadoop-client >/dev/null 2>&1',
     }
   } else {
-    exec { 'package hadoop-client remove':
+    exec { 'package_hadoop-client':
       command => 'yum -qy remove hadoop-client',
       onlyif  => 'rpm -qa | grep hadoop-client >/dev/null 2>&1',
     }
@@ -101,9 +114,9 @@ class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
   #    }
 
   # Create the $cluster_name based $config_directory.
-  file { ['/etc/hadoop/', $config_directory]:
-    ensure => $dir_enabled,
-    force  => true,
+  file { ['/etc/hadoop', $config_directory]:
+    ensure   => $dir_enabled,
+    force    => true,
   }
 
   puppet_cdh::cdh::alternative { 'hadoop-conf':
@@ -113,6 +126,12 @@ class puppet_cdh::cdh::hadoop::init inherits puppet_cdh::cdh::hadoop::params {
   }
 
   if $enabled {
+    exec{'check_hdfs_command_exists':
+      command  => 'command -v /usr/bin/hdfs > /dev/null 2>&1',
+      returns  => ['0'],
+      provider => 'shell',
+      user     => 'root',
+    }
     # Render net-topology.sh from $net_topology_script_template
     # if it was given.
     $net_topology_script_ensure = $net_topology_script_template ? {

@@ -24,14 +24,13 @@
 define puppet_cdh::cdh::alternative ($link, $path, $priority = 50, $enabled) {
   # Update $title alternatives to point $link at $path
   if $enabled {
-    exec { "install alternatives_${title}":
+    exec { "install_alternatives_${title}":
       command => "update-alternatives --install ${link} ${name} ${path} ${priority} && update-alternatives --set ${name} ${path}",
       unless  => "update-alternatives --display ${name} | grep -q '${path}'",
       require => File[$path],
     }
   } else {
-#no need to remove ; yum remove hadoop-client will remove the config
-#    exec { "remove alternatives_${title}":
+#    exec { "remove_alternatives_${title}":
 #      command => "update-alternatives --remove ${name} ${path}",
 #      onlyif  => "update-alternatives --display ${name} | grep -q '${path}'",
 #      before  => File[$path],

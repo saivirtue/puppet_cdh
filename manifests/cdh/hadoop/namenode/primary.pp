@@ -7,7 +7,7 @@
 # HA, then the primary NameNode will be transitioned to active as once NameNode
 # has been formatted, before common HDFS directories are created.
 #
-class puppet_cdh::cdh::hadoop::namenode::primary inherits puppet_cdh::cdh::hadoop::master {
+class puppet_cdh::cdh::hadoop::namenode::primary inherits puppet_cdh::cdh::hadoop::namenode {
   # Go ahead and transision this primary namenode to active if we are using HA.
   if ($ha_enabled) {
     exec { 'haaadmin-transitionToActive':

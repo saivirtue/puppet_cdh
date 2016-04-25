@@ -3,15 +3,7 @@ Exec {
 }
 
 node 'puppetmaster' {
-  #install CM Server
-  /*
-  class { 'cloudera':
-    install_cmserver => true,
-    cm_server_host => 'localhost',
-    ensure => absent,
-  }
-  */
-  
+
   #install CDH packages
   class{ 'puppet_cdh::params':
     #top scope
@@ -47,11 +39,4 @@ node 'puppetmaster' {
   }
   class { 'puppet_cdh':  
   }
-
-#include puppet_cdh::params
-#Package["ruby-augeas"] -> Augeas <| |>
-
-#  notify{'test get local variable':
-#    message => "$puppet_cdh::cdh::hadoop::params::cluster_name",
-#  }
 }

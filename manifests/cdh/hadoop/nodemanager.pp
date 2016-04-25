@@ -1,11 +1,12 @@
 # == Class puppet_cdh::cdh::hadoop::nodemanager
 # Installs and configures a Hadoop NodeManager worker node.
 #
-class puppet_cdh::cdh::hadoop::nodemanager inherits puppet_cdh::cdh::hadoop::worker {
+class puppet_cdh::cdh::hadoop::nodemanager inherits puppet_cdh::cdh::hadoop::init {
   if $enabled {
-    #      Package['hadoop-yarn-nodemanager','hadoop-mapreduce'] -> Service['hadoop-yarn-nodemanager']
     # package no need remove here, hadoop-hdfs dependency will do the job.
-    package { ['hadoop-yarn-nodemanager', 'hadoop-mapreduce']: ensure => $ensure, }
+    package { ['hadoop-yarn-nodemanager', 'hadoop-mapreduce']:
+      ensure => $ensure,
+    }
   }
 
   # service start/stop is handled by shell
