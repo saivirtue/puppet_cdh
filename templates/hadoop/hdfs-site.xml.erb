@@ -71,7 +71,7 @@ end
 <% if ! @ha_enabled -%>
   <property>
     <name>dfs.namenode.http-address</name>
-    <value><%= @primary_namenode_host %>:50070</value>
+    <value>0.0.0.0:50070</value>
   </property>
 <% end # if ! @ha_enabled -%>
   <property>
