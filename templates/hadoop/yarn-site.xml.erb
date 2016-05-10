@@ -103,6 +103,10 @@ end
 
 <% else -%>
   <property>
+    <name>yarn.resourcemanager.webapp.address</name>
+    <value><%= @primary_resourcemanager_host %>:8088</value>
+  </property>
+  <property>
     <name>yarn.resourcemanager.hostname</name>
     <value><%= @primary_resourcemanager_host %></value>
   </property>
